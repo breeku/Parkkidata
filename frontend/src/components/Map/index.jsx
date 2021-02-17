@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 
-import { MapContainer, TileLayer, GeoJSON, Popup } from "react-leaflet"
+import { MapContainer, TileLayer, GeoJSON } from "react-leaflet"
 
 import { getParkingLocations } from "../../services/parking"
 
+import { ParkingDataContext } from "../../context/parking_data"
+
 export default function Map() {
     const [parkingLocations, setParkingLocations] = useState(null)
+    const { parkingDataDispatch } = useContext(ParkingDataContext)
+
     useEffect(() => {
         ;(async () => {
             setParkingLocations(await getParkingLocations())
@@ -23,12 +27,19 @@ export default function Map() {
                     <GeoJSON
                         pathOptions={{ color: "red" }}
                         data={feature.geometry}
-                    >
-                        <Popup>
-                            Capacity:{" "}
-                            {feature.capacity_estimate || "unknown"}
-                        </Popup>
-                    </GeoJSON>
+                        eventHandlers={{
+                            click: () => {
+                                parkingDataDispatch({
+                                    type: "SET_PARKING_DATA",
+                                    payload: {
+                                        capacity_estimate:
+                                            feature.capacity_estimate,
+                                        uid: feature.uid,
+                                    },
+                                })
+                            },
+                        }}
+                    ></GeoJSON>
                 ))}
         </MapContainer>
     )

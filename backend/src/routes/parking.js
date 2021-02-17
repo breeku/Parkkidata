@@ -49,7 +49,7 @@ router.get("/parking_area_statistics/page/:page", async (req, res) => {
     const page = req.params.page
     try {
         const { data } = await axios.get(
-            BASEURL + "/parking_area/?page=" + page
+            BASEURL + "/parking_area_statistics/?page=" + page
         )
         res.send(data)
     } catch (e) {
@@ -60,7 +60,9 @@ router.get("/parking_area_statistics/page/:page", async (req, res) => {
 router.get("/parking_area_statistics/id/:id", async (req, res) => {
     const id = req.params.id
     try {
-        const { data } = await axios.get(BASEURL + "/parking_area/" + id)
+        const { data } = await axios.get(
+            BASEURL + "/parking_area_statistics/" + id
+        )
         res.send(data)
     } catch (e) {
         console.error(e)
