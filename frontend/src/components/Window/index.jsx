@@ -1,13 +1,19 @@
-import React, { useContext } from "react"
+import React, { useContext, useEffect, useState } from "react"
 
 import Draggable from "react-draggable"
 
 import { ParkingDataContext } from "../../context/parking_data"
 
 export default function Window() {
+    const [parkingStatistics, setParkingStatistics] = useState(null)
     const { parkingDataState } = useContext(ParkingDataContext)
 
-    console.log(parkingDataState)
+    useEffect(() => {
+        ;(async () => {
+            //
+        })()
+    }, [parkingDataState])
+
     return (
         <Draggable defaultPosition={{ x: 0, y: 0 }} position={null} scale={1}>
             <div
@@ -23,7 +29,7 @@ export default function Window() {
                     <br />
                     capacity estimate: {parkingDataState?.capacity_estimate}
                     <br />
-                    {parkingDataState?.current_parking_count}
+                    current parking count: {parkingStatistics}
                 </div>
             </div>
         </Draggable>
