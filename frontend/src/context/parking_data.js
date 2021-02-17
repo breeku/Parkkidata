@@ -1,18 +1,26 @@
-import React from "react"
+import React from 'react'
 
 export const ParkingDataContext = React.createContext()
 
 export const parkingDataInitialState = {
-    uid: null,
-    capacity_estimate: null,
+    selected: {
+        uid: null,
+        capacity_estimate: null,
+    },
+    locations: [],
 }
 
 export const parkingDataReducer = (state, action) => {
     switch (action.type) {
-        case "SET_PARKING_DATA":
+        case 'SET_PARKING_DATA':
             return {
                 ...state,
-                ...action.payload,
+                selected: { ...action.payload },
+            }
+        case 'SET_PARKING_LOCATIONS':
+            return {
+                ...state,
+                locations: [...action.payload],
             }
         default:
             return state

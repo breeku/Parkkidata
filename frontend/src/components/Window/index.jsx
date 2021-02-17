@@ -1,38 +1,58 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from 'react'
 
-import Draggable from "react-draggable"
+import Draggable from 'react-draggable'
 
-import { ParkingDataContext } from "../../context/parking_data"
+import { ParkingDataContext } from '../../context/parking_data'
 
-import {getParkingStatistics} from "../../services/parking"
+import { getParkingStatistics } from '../../services/parking'
 
 export default function Window() {
     const [parkingStatistics, setParkingStatistics] = useState(null)
-    const { parkingDataState } = useContext(ParkingDataContext)
+    const {
+        parkingDataState: { selected },
+    } = useContext(ParkingDataContext)
 
     useEffect(() => {
         ;(async () => {
-            if(parkingDataState.uid){
-                const {current_parking_count} = await getParkingStatistics(parkingDataState.uid)
+            if (selected.uid) {
+                const { current_parking_count } = await getParkingStatistics(selected.uid)
                 setParkingStatistics(current_parking_count)
             }
         })()
-    }, [parkingDataState])
+    }, [selected])
 
     return (
         <Draggable defaultPosition={{ x: 0, y: 0 }} position={null} scale={1}>
             <div
                 style={{
-                    backgroundColor: "white",
-                    display: "inline-block",
-                    width: "300px",
-                    height: "300px",
-                }}
-            >
-                <div>
-                    uid: {parkingDataState?.uid}
+                    display: 'inline-flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}>
+                <div
+                    style={{
+                        backgroundColor: 'white',
+                        display: 'inline-block',
+                        width: '100px',
+                        padding: 10,
+                        marginBottom: 3,
+                        textAlign: 'center',
+                    }}>
+                    Filters
                     <br />
-                    capacity estimate: {parkingDataState?.capacity_estimate}
+                    --
+                </div>
+                <div
+                    style={{
+                        backgroundColor: 'white',
+                        display: 'inline-block',
+                        width: '300px',
+                        padding: 10,
+                        textAlign: 'center',
+                    }}>
+                    uid: {selected?.uid}
+                    <br />
+                    capacity estimate: {selected?.capacity_estimate}
                     <br />
                     current parking count: {parkingStatistics}
                 </div>

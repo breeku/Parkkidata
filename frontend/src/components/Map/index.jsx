@@ -1,20 +1,25 @@
-import React, { useEffect, useState, useContext } from "react"
+import React, { useEffect, useState, useContext } from 'react'
 
-import { MapContainer, TileLayer, GeoJSON } from "react-leaflet"
+import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet'
 
-import { getParkingLocations } from "../../services/parking"
+import { getParkingLocations } from '../../services/parking'
 
-import { ParkingDataContext } from "../../context/parking_data"
+import { ParkingDataContext } from '../../context/parking_data'
 
 export default function Map() {
-    const [parkingLocations, setParkingLocations] = useState(null)
-    const { parkingDataDispatch } = useContext(ParkingDataContext)
+    const {
+        parkingDataState: { locations },
+        parkingDataDispatch,
+    } = useContext(ParkingDataContext)
 
     useEffect(() => {
         ;(async () => {
-            setParkingLocations(await getParkingLocations())
+            parkingDataDispatch({
+                type: 'SET_PARKING_LOCATIONS',
+                payload: await getParkingLocations(),
+            })
         })()
-    }, [])
+    }, [parkingDataDispatch])
 
     return (
         <MapContainer center={[60.1699, 24.9384]} zoom={13}>
@@ -22,24 +27,22 @@ export default function Map() {
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             />
-            {parkingLocations &&
-                parkingLocations.map((feature) => (
+            {locations &&
+                locations.map(feature => (
                     <GeoJSON
-                        pathOptions={{ color: "red" }}
+                        pathOptions={{ color: 'red' }}
                         data={feature.geometry}
                         eventHandlers={{
                             click: () => {
                                 parkingDataDispatch({
-                                    type: "SET_PARKING_DATA",
+                                    type: 'SET_PARKING_DATA',
                                     payload: {
-                                        capacity_estimate:
-                                            feature.capacity_estimate,
+                                        capacity_estimate: feature.capacity_estimate,
                                         uid: feature.uid,
                                     },
                                 })
                             },
-                        }}
-                    ></GeoJSON>
+                        }}></GeoJSON>
                 ))}
         </MapContainer>
     )

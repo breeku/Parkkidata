@@ -1,11 +1,14 @@
-const express = require("express")
-const axios = require("axios")
+const express = require('express')
+const axios = require('axios')
 const router = express.Router()
-const { getParkingAreas } = require("../database/queries/parking_area")
+const {
+    getParkingAreas,
+    getFilteredParkingAreas,
+} = require('../database/queries/parking_area')
 
-const BASEURL = "https://pubapi.parkkiopas.fi/public/v1"
+const BASEURL = 'https://pubapi.parkkiopas.fi/public/v1'
 
-router.get("/parking_area/", async (req, res) => {
+router.get('/parking_area/', async (req, res) => {
     try {
         const data = await getParkingAreas()
         res.send(data)
@@ -14,11 +17,50 @@ router.get("/parking_area/", async (req, res) => {
     }
 })
 
-router.get("/parking_area/page/:page", async (req, res) => {
+router.get('/parking_area/filter/:operator/:capacity', async (req, res) => {
+    const { operator, capacity } = req.params
+    try {
+        const data = await getFilteredParkingAreas(operator, capacity)
+        res.send(data)
+    } catch (e) {
+        console.error(e)
+    }
+})
+
+router.get('/parking_area/page/:page', async (req, res) => {
+    const page = req.params.page
+    try {
+        const { data } = await axios.get(BASEURL + '/parking_area/?page=' + page)
+        res.send(data)
+    } catch (e) {
+        console.error(e)
+    }
+})
+
+router.get('/parking_area/id/:id', async (req, res) => {
+    const id = req.params.id
+    try {
+        const { data } = await axios.get(BASEURL + '/parking_area/' + id)
+        res.send(data)
+    } catch (e) {
+        console.error(e)
+    }
+})
+
+router.get('/parking_area_statistics', async (req, res) => {
+    try {
+        const { data } = await axios.get(BASEURL + '/parking_area_statistics/')
+        res.send(data)
+    } catch (e) {
+        console.error(e)
+    }
+})
+
+router.get('/parking_area_statistics/page/:page', async (req, res) => {
     const page = req.params.page
     try {
         const { data } = await axios.get(
-            BASEURL + "/parking_area/?page=" + page
+            BASEURL + '/parking_area_statistics/?page=' + page,
         )
         res.send(data)
     } catch (e) {
@@ -26,43 +68,10 @@ router.get("/parking_area/page/:page", async (req, res) => {
     }
 })
 
-router.get("/parking_area/id/:id", async (req, res) => {
+router.get('/parking_area_statistics/id/:id', async (req, res) => {
     const id = req.params.id
     try {
-        const { data } = await axios.get(BASEURL + "/parking_area/" + id)
-        res.send(data)
-    } catch (e) {
-        console.error(e)
-    }
-})
-
-router.get("/parking_area_statistics", async (req, res) => {
-    try {
-        const { data } = await axios.get(BASEURL + "/parking_area_statistics/")
-        res.send(data)
-    } catch (e) {
-        console.error(e)
-    }
-})
-
-router.get("/parking_area_statistics/page/:page", async (req, res) => {
-    const page = req.params.page
-    try {
-        const { data } = await axios.get(
-            BASEURL + "/parking_area_statistics/?page=" + page
-        )
-        res.send(data)
-    } catch (e) {
-        console.error(e)
-    }
-})
-
-router.get("/parking_area_statistics/id/:id", async (req, res) => {
-    const id = req.params.id
-    try {
-        const { data } = await axios.get(
-            BASEURL + "/parking_area_statistics/" + id
-        )
+        const { data } = await axios.get(BASEURL + '/parking_area_statistics/' + id)
         res.send(data)
     } catch (e) {
         console.error(e)
