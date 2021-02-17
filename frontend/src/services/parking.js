@@ -9,3 +9,12 @@ export const getParkingLocations = async () => {
         console.error(e)
     }
 }
+
+export const getParkingStatistics = async (id) => {
+    try {
+        const { data } = await axios.get(API + "/parking_area_statistics/id/" + id)
+        return data
+    } catch (e) {
+        console.error(e)
+    }
+}
