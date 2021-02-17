@@ -19,14 +19,14 @@ export default function Map() {
                 url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             />
             {parkingLocations &&
-                parkingLocations.features.map((feature) => (
+                parkingLocations.map((feature) => (
                     <GeoJSON
                         pathOptions={{ color: "red" }}
                         data={feature.geometry}
                     >
                         <Popup>
                             Capacity:{" "}
-                            {feature.properties.capacity_estimate || "unknown"}
+                            {feature.capacity_estimate || "unknown"}
                         </Popup>
                     </GeoJSON>
                 ))}
