@@ -4,7 +4,7 @@ const router = express.Router()
 
 const BASEURL = "https://pubapi.parkkiopas.fi/public/v1"
 
-router.get("/parking_area", async (req, res) => {
+router.get("/parking_area/", async (req, res) => {
     try {
         const { data } = await axios.get(BASEURL + "/parking_area/")
         res.send(data)
