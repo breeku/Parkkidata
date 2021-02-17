@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 
-import { MapContainer, TileLayer, Polyline, Popup } from "react-leaflet"
+import { MapContainer, TileLayer, GeoJSON, Popup } from "react-leaflet"
 
 import { getParkingLocations } from "../../services/parking"
 
@@ -19,27 +19,17 @@ export default function Map() {
                 url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             />
             {parkingLocations &&
-                parkingLocations.features.map((feature) =>
-                    feature.geometry.coordinates.map((coordinates) => {
-                        const correctedCoordinates = []
-                        for (const coord of coordinates[0]) {
-                            // the coordinates are the wrong way around. This should be done server side
-                            correctedCoordinates.push([coord[1], coord[0]])
-                        }
-                        return (
-                            <Polyline
-                                pathOptions={{ color: "red" }}
-                                positions={correctedCoordinates}
-                            >
-                                <Popup>
-                                    Capacity:{" "}
-                                    {feature.properties.capacity_estimate ||
-                                        "unknown"}
-                                </Popup>
-                            </Polyline>
-                        )
-                    })
-                )}
+                parkingLocations.map((feature) => (
+                    <GeoJSON
+                        pathOptions={{ color: "red" }}
+                        data={feature.geometry}
+                    >
+                        <Popup>
+                            Capacity:{" "}
+                            {feature.capacity_estimate || "unknown"}
+                        </Popup>
+                    </GeoJSON>
+                ))}
         </MapContainer>
     )
 }

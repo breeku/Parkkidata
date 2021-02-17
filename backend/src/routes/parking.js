@@ -1,12 +1,13 @@
 const express = require("express")
 const axios = require("axios")
 const router = express.Router()
+const { getParkingAreas } = require("../database/queries/parking_area")
 
 const BASEURL = "https://pubapi.parkkiopas.fi/public/v1"
 
-router.get("/parking_area", async (req, res) => {
+router.get("/parking_area/", async (req, res) => {
     try {
-        const { data } = await axios.get(BASEURL + "/parking_area/")
+        const data = await getParkingAreas()
         res.send(data)
     } catch (e) {
         console.error(e)
