@@ -5,7 +5,6 @@ export const ParkingDataContext = React.createContext()
 export const parkingDataInitialState = {
     uid: null,
     capacity_estimate: null,
-    current_parking_count: null,
 }
 
 export const parkingDataReducer = (state, action) => {
