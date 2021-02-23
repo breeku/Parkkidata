@@ -18,3 +18,12 @@ export const getParkingStatistics = async (id) => {
         console.error(e)
     }
 }
+
+export const getParkingHistory = async (uid) => {
+    try {
+        const { data } = await axios.get(API + "/parking_history/uid/" + uid)
+        return data
+    } catch (e) {
+        console.error(e)
+    }
+}

@@ -4,10 +4,15 @@ import Draggable from 'react-draggable'
 
 import { ParkingDataContext } from '../../context/parking_data'
 
-import { getParkingStatistics } from '../../services/parking'
+import { getParkingStatistics } from "../../services/parking"
+
+import { getParkingHistory } from "../../services/parking"
+
+import { LineChart, Line } from 'recharts';
 
 export default function Window() {
     const [parkingStatistics, setParkingStatistics] = useState(null)
+    const [parkingHistory, setParkingHistory] = useState(null)
     const {
         parkingDataState: { selected, locations },
         parkingDataDispatch,
@@ -26,9 +31,12 @@ export default function Window() {
         ;(async () => {
             if (selected.uid) {
                 const { current_parking_count } = await getParkingStatistics(selected.uid)
+                const current_parking_history = await getParkingHistory(selected.uid)
                 setParkingStatistics(current_parking_count)
+                setParkingHistory(current_parking_history)
+                
             }
-        })()
+        })() 
     }, [selected])
 
     useEffect(() => {
@@ -125,8 +133,24 @@ export default function Window() {
                     capacity estimate: {selected?.capacity_estimate}
                     <br />
                     current parking count: {parkingStatistics}
+                    </div>
+                
+                <>
+                {parkingHistory &&
+                <div 
+                    style={{
+                        backgroundColor: "white",
+                        display: "inline-block",
+                        width: "400px",
+                        height: "400px",
+                        marginTop: 3,
+                    }}>
+                     <LineChart width={400} height={400} data={parkingHistory}>
+                        <Line type="monotone" dataKey="current_parking_count" stroke="#8884d8" />
+                    </LineChart>
+                </div>}
+                </>
                 </div>
-            </div>
         </Draggable>
     )
 }

@@ -2,6 +2,7 @@ const express = require("express")
 const axios = require("axios")
 const router = express.Router()
 const { getParkingAreas } = require("../database/queries/parking_area")
+const { getParkingHistoryByUid } = require ("../database/queries/parking_area")
 
 const BASEURL = "https://pubapi.parkkiopas.fi/public/v1"
 
@@ -13,6 +14,16 @@ router.get("/parking_area/", async (req, res) => {
         console.error(e)
     }
 })
+
+router.get("/parking_history/uid/:uid", async (req, res) => {
+    const uid = req.params.uid
+    try {
+        const data = await getParkingHistoryByUid(uid)
+        res.send(data)
+    } catch (e) {
+        console.error(e)
+    }
+}) 
 
 router.get("/parking_area/page/:page", async (req, res) => {
     const page = req.params.page
