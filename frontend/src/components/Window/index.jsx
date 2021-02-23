@@ -8,7 +8,7 @@ import { getParkingStatistics } from "../../services/parking"
 
 import { getParkingHistory } from "../../services/parking"
 
-import { LineChart, Line } from 'recharts';
+import { LineChart, Line ,CartesianGrid, XAxis, YAxis, Tooltip} from 'recharts';
 
 export default function Window() {
     const [parkingStatistics, setParkingStatistics] = useState(null)
@@ -27,6 +27,23 @@ export default function Window() {
     const [checkbox, setCheckbox] = useState(false)
     const [operator, setOperator] = useState('more than')
 
+    const CustomTooltip = ({ active, payload, label }) => {
+        if (active && payload && payload.length) {
+            const date = new Date(label)
+            const labelDate = date.getDate() + "-" + (date.getMonth()+1) + "-" + date.getFullYear()
+            label = date.getUTCHours()+2 + ".00"
+          return (
+            <div style={{backgroundColor: "white", opacity: "90%",}} className="custom-tooltip">
+              <p className="label">{`date: ${labelDate}`}</p>
+              <p className="label">{`time: ${label}`}</p>
+              <p className="label">{`parking count: ${payload[0].value}`}</p>
+            </div>
+          );
+        }
+      
+        return null;
+      };
+
     useEffect(() => {
         ;(async () => {
             if (selected.uid) {
@@ -38,7 +55,6 @@ export default function Window() {
             }
         })() 
     }, [selected])
-
     useEffect(() => {
         ;(() => {
             let filtered
@@ -135,7 +151,6 @@ export default function Window() {
                     current parking count: {parkingStatistics}
                     </div>
                 
-                <>
                 {parkingHistory &&
                 <div 
                     style={{
@@ -147,9 +162,12 @@ export default function Window() {
                     }}>
                      <LineChart width={400} height={400} data={parkingHistory}>
                         <Line type="monotone" dataKey="current_parking_count" stroke="#8884d8" />
+                        <CartesianGrid stroke="#ccc" strokeDasharray="1 1" />
+                        <XAxis dataKey="created_at"  tickFormatter={(formtime) => new Date(formtime).toLocaleTimeString(["en-US"], {hour: '2-digit'})}/>
+                        <YAxis dataKey="current_parking_count"/>
+                        <Tooltip content={CustomTooltip}/>
                     </LineChart>
                 </div>}
-                </>
                 </div>
         </Draggable>
     )
