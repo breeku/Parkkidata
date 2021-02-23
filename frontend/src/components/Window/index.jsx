@@ -4,9 +4,9 @@ import Draggable from 'react-draggable'
 
 import { ParkingDataContext } from '../../context/parking_data'
 
-import { getParkingStatistics } from "../../services/parking"
+import { getParkingStatistics } from '../../services/parking'
 
-import { getParkingHistory } from "../../services/parking"
+import { getParkingHistory } from '../../services/parking'
 
 import { LineChart, Line ,CartesianGrid, XAxis, YAxis, Tooltip} from 'recharts';
 
@@ -20,11 +20,11 @@ export default function Window() {
     const maxCapacity = Math.max.apply(
         Math,
         locations.map(parking_space => {
-            return parking_space.capacity_estimate
+            return parking_space.features[0].properties.capacity_estimate
         }),
     )
-    const [slider, setSlider] = useState(maxCapacity)
-    const [checkbox, setCheckbox] = useState(false)
+    const [slider, setSlider] = useState(0)
+    const [checkbox, setCheckbox] = useState(true)
     const [operator, setOperator] = useState('more than')
 
     const CustomTooltip = ({ active, payload, label }) => {
@@ -51,30 +51,39 @@ export default function Window() {
                 const current_parking_history = await getParkingHistory(selected.uid)
                 setParkingStatistics(current_parking_count)
                 setParkingHistory(current_parking_history)
-                
             }
-        })() 
+        })()
     }, [selected])
     useEffect(() => {
         ;(() => {
-            let filtered
+            const copy = [...locations]
+            let filtered = checkbox
+                ? [...copy.filter(item => !item.features[0].properties.capacity_estimate)]
+                : []
+
             if (operator === 'more than') {
-                filtered = locations.filter(
-                    item =>
-                        (checkbox && !item.capacity_estimate) ||
-                        item.capacity_estimate > slider,
+                filtered.push(
+                    ...copy.filter(
+                        item =>
+                            parseInt(item.features[0].properties.capacity_estimate) >
+                            parseInt(slider),
+                    ),
                 )
             } else if (operator === 'less than') {
-                filtered = locations.filter(
-                    item =>
-                        (checkbox && !item.capacity_estimate) ||
-                        item.capacity_estimate < slider,
+                filtered.push(
+                    ...copy.filter(
+                        item =>
+                            parseInt(item.features[0].properties.capacity_estimate) <
+                            parseInt(slider),
+                    ),
                 )
             } else if (operator === 'equal') {
-                filtered = locations.filter(
-                    item =>
-                        (checkbox && !item.capacity_estimate) ||
-                        parseInt(item.capacity_estimate) === parseInt(slider),
+                filtered.push(
+                    ...copy.filter(
+                        item =>
+                            parseInt(item.features[0].properties.capacity_estimate) ===
+                            parseInt(slider),
+                    ),
                 )
             }
 
@@ -146,7 +155,7 @@ export default function Window() {
                     className='handle'>
                     uid: {selected?.uid}
                     <br />
-                    capacity estimate: {selected?.capacity_estimate}
+                    capacity estimate: {selected?.capacity_estimate || 'unknown'}
                     <br />
                     current parking count: {parkingStatistics}
                     </div>
