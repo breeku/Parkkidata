@@ -56,3 +56,12 @@ components:
                                         example: 14
                                     uid:
                                         type: string
+        Parking_Area_Statistics:
+            type: object
+            properties:
+                uid:
+                    type: string
+                    example: 'f27f4cde-f979-470c-9f4e-78e4a8eb0eb4'
+                current_parking_count:
+                    type: integer
+                    example: 5
