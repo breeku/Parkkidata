@@ -3,9 +3,27 @@ const axios = require('axios')
 const router = express.Router()
 const { getParkingAreas } = require('../database/queries/parking_area')
 const { getParkingHistoryByUid } = require('../database/queries/parking_area')
-
 const BASEURL = 'https://pubapi.parkkiopas.fi/public/v1'
 
+/**
+ * @swagger
+ * /api/parking_area/:
+ *   get:
+ *     summary: Get a list of parking areas
+ *     description: Fetch info about parking areas as GeoJSON feature collection.
+ *     responses:
+ *       200:
+ *         description: An array of parking areas with metadata information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Parking_Area'
+ *       500:
+ *         description: Internal server error
+ *
+ */
 router.get('/parking_area/', async (req, res) => {
     try {
         const data = await getParkingAreas()
@@ -27,67 +45,96 @@ router.get('/parking_area/', async (req, res) => {
         res.send(result)
     } catch (e) {
         console.error(e)
+        res.sendStatus(500)
     }
 })
-
+/**
+ * @swagger
+ * /api/parking_history/uid/{uid}/:
+ *   get:
+ *     summary: Get a list of parking areas' history
+ *     description: Fetch history of the parking area.
+ *     parameters:
+ *       - in: path
+ *         name: uid
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: uid of the parking area
+ *     responses:
+ *       200:
+ *         description: An array of parking areas with metadata information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 allOf:
+ *                   - $ref: '#/components/schemas/Parking_Area_Statistics'
+ *                   - type: object
+ *                     properties:
+ *                       createdAt:
+ *                         type: date-time
+ *                         example: "2017-07-21T17:32:28Z"
+ *       404:
+ *         description: Parking history with uid not found
+ *       500:
+ *         description: Internal server error
+ *
+ */
 router.get('/parking_history/uid/:uid', async (req, res) => {
     const uid = req.params.uid
     try {
         const data = await getParkingHistoryByUid(uid)
+        if (data.length === 0) throw 'Not Found'
         res.send(data)
     } catch (e) {
         console.error(e)
+        if (e === 'Not found') res.sendStatus(404)
+        res.sendStatus(500)
     }
 })
 
-router.get('/parking_area/page/:page', async (req, res) => {
-    const page = req.params.page
-    try {
-        const { data } = await axios.get(BASEURL + '/parking_area/?page=' + page)
-        res.send(data)
-    } catch (e) {
-        console.error(e)
-    }
-})
+/**
+ * @swagger
+ * /api/parking_area_statistics/uid/{uid}/:
+ *   get:
+ *     summary: Get parking area statistics by parking area UID
+ *     description: Fetch statistics of a single parking area.
+ *     parameters:
+ *       - in: path
+ *         name: uid
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: uid of the parking area
+ *     responses:
+ *       200:
+ *         description: The requested parking area statistics
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Parking_Area_Statistics'
+ *       404:
+ *         description: The requested parking area statistics not found
+ *       304:
+ *         description: The requested parking area statistics not modified
+ *       500:
+ *         description: Internal Server Error
+ *
+ */
+router.get('/parking_area_statistics/uid/:uid', async (req, res) => {
+    const uid = req.params.uid
 
-router.get('/parking_area/id/:id', async (req, res) => {
-    const id = req.params.id
     try {
-        const { data } = await axios.get(BASEURL + '/parking_area/' + id)
-        res.send(data)
+        const { data } = await axios.get(BASEURL + '/parking_area_statistics/' + uid)
+        const result = { uid: data.id, current_parking_count: data.current_parking_count }
+        res.send(result)
     } catch (e) {
         console.error(e)
-    }
-})
-
-router.get('/parking_area_statistics', async (req, res) => {
-    try {
-        const { data } = await axios.get(BASEURL + '/parking_area_statistics/')
-        res.send(data)
-    } catch (e) {
-        console.error(e)
-    }
-})
-
-router.get('/parking_area_statistics/page/:page', async (req, res) => {
-    const page = req.params.page
-    try {
-        const { data } = await axios.get(
-            BASEURL + '/parking_area_statistics/?page=' + page,
-        )
-        res.send(data)
-    } catch (e) {
-        console.error(e)
-    }
-})
-
-router.get('/parking_area_statistics/id/:id', async (req, res) => {
-    const id = req.params.id
-    try {
-        const { data } = await axios.get(BASEURL + '/parking_area_statistics/' + id)
-        res.send(data)
-    } catch (e) {
-        console.error(e)
+        if (e.response) {
+            res.status(e.response.status)
+        }
     }
 })
 

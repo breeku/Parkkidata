@@ -1,0 +1,67 @@
+components:
+    definitions:
+        Geometry:
+            type: object
+            description: GeoJSON geometry
+            properties:
+                type:
+                    type: string
+                    description: the geometry type
+        Point2D:
+            type: array
+            maxItems: 2
+            minItems: 2
+            example: [24.948941061040355, 60.17185685528542]
+            items:
+                type: number
+        MultiPolygon:
+            type: object
+            description: GeoJSON geometry
+            externalDocs:
+                url: http://geojson.org/geojson-spec.html#id6
+            allOf:
+                - $ref: '#/components/definitions/Geometry'
+                - properties:
+                      coordinates:
+                          type: array
+                          items:
+                              type: array
+                              items:
+                                  type: array
+                                  items:
+                                      $ref: '#/components/definitions/Point2D'
+    schemas:
+        Parking_Area:
+            type: object
+            properties:
+                type:
+                    type: string
+                    example: 'FeatureCollection'
+                features:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            type:
+                                type: string
+                                example: 'Feature'
+                            geometry:
+                                $ref: '#/components/definitions/MultiPolygon'
+                            properties:
+                                type: object
+                                properties:
+                                    capacity_estimate:
+                                        type: integer,
+                                        nullable: true
+                                        example: 14
+                                    uid:
+                                        type: string
+        Parking_Area_Statistics:
+            type: object
+            properties:
+                uid:
+                    type: string
+                    example: 'f27f4cde-f979-470c-9f4e-78e4a8eb0eb4'
+                current_parking_count:
+                    type: integer
+                    example: 5

@@ -1,2 +1,4 @@
 .env
 node_modules
+src/swagger/public/index.html
+src/swagger/swagger_spec.json
