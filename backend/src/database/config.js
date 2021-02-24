@@ -8,6 +8,7 @@ const knex = require('knex')({
         port: process.env.DB_PORT,
     },
     pool: { min: 0, max: 7 },
+    debug: true,
 })
 
 module.exports = knex
