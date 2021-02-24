@@ -16,10 +16,11 @@ const knex = require('../database/config')
                 })
             }
             next = data.next
-            console.log(new Date().toLocaleDateString() + ': ' + next)
+            console.log(new Date().toString() + ': ' + next)
         } catch (e) {
             console.error(e)
         }
     }
+    knex.destroy()
     return
 })()
