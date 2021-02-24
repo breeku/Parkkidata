@@ -5,9 +5,11 @@
     "main": "index.js",
     "scripts": {
         "watch": "nodemon src/index.js",
+        "start": "node src/index.js",
         "swagger:jsdoc": "swagger-jsdoc -d ./src/swagger/swaggerDefinition.js ./src/routes/*.js ./src/swagger/spec/*.yaml -o ./src/swagger/swagger_spec.json",
         "swagger:redoc": "redoc-cli bundle ./src/swagger/swagger_spec.json --output ./src/swagger/public/index.html",
-        "swagger": "npm run swagger:jsdoc && npm run swagger:redoc"
+        "swagger": "npm run swagger:jsdoc && npm run swagger:redoc",
+        "update:db": "node src/cron/update_parking_area_statistics.js"
     },
     "keywords": [],
     "author": "",
