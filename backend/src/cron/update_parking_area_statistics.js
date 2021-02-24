@@ -7,6 +7,7 @@ const knex = require('../database/config')
 
     while (next) {
         try {
+            await new Promise(resolve => setTimeout(resolve, 500))
             const { data } = await axios.get(next)
             for (const result of data.results) {
                 await knex('parking_area_statistics').insert({
@@ -15,7 +16,7 @@ const knex = require('../database/config')
                 })
             }
             next = data.next
-            console.log(next)
+            console.log(new Date().toLocaleDateString() + ': ' + next)
         } catch (e) {
             console.error(e)
         }
