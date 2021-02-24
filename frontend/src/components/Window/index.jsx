@@ -8,7 +8,7 @@ import { getParkingStatistics } from '../../services/parking'
 
 import { getParkingHistory } from '../../services/parking'
 
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts'
+import Graph from '../Window/Graph/index'
 
 import Filter from './Filter'
 
@@ -19,28 +19,8 @@ export default function Window() {
         parkingDataState: { selected },
     } = useContext(ParkingDataContext)
 
-    const CustomTooltip = ({ active, payload, label }) => {
-        if (active && payload && payload.length) {
-            const date = new Date(label)
-            const labelDate =
-                date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()
-            label = date.getUTCHours() + 2 + '.00'
-            return (
-                <div
-                    style={{ backgroundColor: 'white', opacity: '90%' }}
-                    className='custom-tooltip'>
-                    <p className='label'>{`date: ${labelDate}`}</p>
-                    <p className='label'>{`time: ${label}`}</p>
-                    <p className='label'>{`parking count: ${payload[0].value}`}</p>
-                </div>
-            )
-        }
-
-        return null
-    }
-
     useEffect(() => {
-        ;(async () => {
+        ; (async () => {
             if (selected.uid) {
                 const { current_parking_count } = await getParkingStatistics(selected.uid)
                 const current_parking_history = await getParkingHistory(selected.uid)
@@ -88,36 +68,8 @@ export default function Window() {
                     <br />
                     current parking count: {parkingStatistics}
                 </div>
-
-                {parkingHistory && (
-                    <div
-                        style={{
-                            backgroundColor: 'white',
-                            display: 'inline-block',
-                            width: '400px',
-                            height: '400px',
-                            marginTop: 3,
-                        }}>
-                        <LineChart width={400} height={400} data={parkingHistory}>
-                            <Line
-                                type='monotone'
-                                dataKey='current_parking_count'
-                                stroke='#8884d8'
-                            />
-                            <CartesianGrid stroke='#ccc' strokeDasharray='1 1' />
-                            <XAxis
-                                dataKey='created_at'
-                                tickFormatter={formtime =>
-                                    new Date(formtime).toLocaleTimeString(['en-US'], {
-                                        hour: '2-digit',
-                                    })
-                                }
-                            />
-                            <YAxis dataKey='current_parking_count' />
-                            <Tooltip content={CustomTooltip} />
-                        </LineChart>
-                    </div>
-                )}
+                {parkingHistory && <Graph history={parkingHistory} />
+                }
             </div>
         </Draggable>
     )
