@@ -9,12 +9,13 @@ const knex = require('../database/config')
         try {
             await new Promise(resolve => setTimeout(resolve, 500))
             const { data } = await axios.get(next)
-            for (const result of data.results) {
-                await knex('parking_area_statistics').insert({
-                    uid: result.id,
-                    current_parking_count: result.current_parking_count,
-                })
-            }
+            const result = data.results.map(data => ({
+                uid: data.id,
+                current_parking_count: data.current_parking_count,
+            }))
+
+            await knex('parking_area_statistics').insert(result)
+
             next = data.next
             console.log(new Date().toString() + ': ' + next)
         } catch (e) {
