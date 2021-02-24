@@ -6,15 +6,13 @@ import { ParkingDataContext } from '../../context/parking_data'
 
 import { getParkingStatistics } from '../../services/parking'
 
-import { getParkingHistory } from '../../services/parking'
-
 import Graph from '../Window/Graph/index'
 
 import Filter from './Filter'
 
 export default function Window() {
     const [parkingStatistics, setParkingStatistics] = useState(null)
-    const [parkingHistory, setParkingHistory] = useState(null)
+
     const {
         parkingDataState: { selected },
     } = useContext(ParkingDataContext)
@@ -23,13 +21,10 @@ export default function Window() {
         ; (async () => {
             if (selected.uid) {
                 const { current_parking_count } = await getParkingStatistics(selected.uid)
-                const current_parking_history = await getParkingHistory(selected.uid)
                 setParkingStatistics(current_parking_count)
-                setParkingHistory(current_parking_history)
             }
         })()
     }, [selected])
-
     return (
         <Draggable
             defaultPosition={{ x: 0, y: 0 }}
@@ -68,7 +63,7 @@ export default function Window() {
                     <br />
                     current parking count: {parkingStatistics}
                 </div>
-                {parkingHistory && <Graph history={parkingHistory} />
+                {selected.uid && <Graph uid={selected.uid} />
                 }
             </div>
         </Draggable>

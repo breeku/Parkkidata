@@ -7,9 +7,9 @@ const getParkingAreas = async () => {
 }
 
 
-const getParkingHistoryByUid = async (uid) => {
-    return await knex.from('parking_area_statistics').select().where({uid})
+const getParkingHistoryByUid = async (uid, limit) => {
+    return await knex.from('parking_area_statistics').select().where({ uid }).orderBy('id', 'desc').limit(limit)
 }
 
 
-module.exports = { getParkingAreas,getParkingHistoryByUid }
+module.exports = { getParkingAreas, getParkingHistoryByUid }

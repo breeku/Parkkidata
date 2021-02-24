@@ -48,9 +48,10 @@ router.get('/parking_area/', async (req, res) => {
         res.sendStatus(500)
     }
 })
+
 /**
  * @swagger
- * /api/parking_history/uid/{uid}/:
+ * /api/parking_history/uid/{uid}/{limit}:
  *   get:
  *     summary: Get a list of parking areas' history
  *     description: Fetch history of the parking area.
@@ -61,6 +62,12 @@ router.get('/parking_area/', async (req, res) => {
  *           type: integer
  *         required: true
  *         description: uid of the parking area
+ *       - in: path
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: number of items to return
  *     responses:
  *       200:
  *         description: An array of parking areas with metadata information
@@ -82,10 +89,11 @@ router.get('/parking_area/', async (req, res) => {
  *         description: Internal server error
  *
  */
-router.get('/parking_history/uid/:uid', async (req, res) => {
+router.get('/parking_history/uid/:uid/:limit', async (req, res) => {
     const uid = req.params.uid
+    const limit = req.params.limit
     try {
-        const data = await getParkingHistoryByUid(uid)
+        const data = await getParkingHistoryByUid(uid, limit)
         if (data.length === 0) throw 'Not Found'
         res.send(data)
     } catch (e) {
