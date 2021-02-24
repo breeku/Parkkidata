@@ -30,10 +30,11 @@ router.get('/parking_area/', async (req, res) => {
     }
 })
 
-router.get('/parking_history/uid/:uid', async (req, res) => {
+router.get('/parking_history/uid/:uid/:limit', async (req, res) => {
     const uid = req.params.uid
+    const limit = req.params.limit || 24
     try {
-        const data = await getParkingHistoryByUid(uid)
+        const data = await getParkingHistoryByUid(uid, limit)
         res.send(data)
     } catch (e) {
         console.error(e)

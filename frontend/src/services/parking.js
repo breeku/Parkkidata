@@ -19,9 +19,9 @@ export const getParkingStatistics = async (id) => {
     }
 }
 
-export const getParkingHistory = async (uid) => {
+export const getParkingHistory = async (uid, limit) => {
     try {
-        const { data } = await axios.get(API + "/parking_history/uid/" + uid)
+        const { data } = await axios.get(API + "/parking_history/uid/" + uid + "/" + limit)
         return data
     } catch (e) {
         console.error(e)
