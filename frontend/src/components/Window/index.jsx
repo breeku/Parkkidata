@@ -10,22 +10,14 @@ import { getParkingHistory } from '../../services/parking'
 
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts'
 
+import Filter from './Filter'
+
 export default function Window() {
     const [parkingStatistics, setParkingStatistics] = useState(null)
     const [parkingHistory, setParkingHistory] = useState(null)
     const {
-        parkingDataState: { selected, locations },
-        parkingDataDispatch,
+        parkingDataState: { selected },
     } = useContext(ParkingDataContext)
-    const maxCapacity = Math.max.apply(
-        Math,
-        locations.map(parking_space => {
-            return parking_space.features[0].properties.capacity_estimate
-        }),
-    )
-    const [slider, setSlider] = useState(0)
-    const [checkbox, setCheckbox] = useState(true)
-    const [operator, setOperator] = useState('more than')
 
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
@@ -57,45 +49,6 @@ export default function Window() {
             }
         })()
     }, [selected])
-    useEffect(() => {
-        ;(() => {
-            const copy = [...locations]
-            let filtered = checkbox
-                ? [...copy.filter(item => !item.features[0].properties.capacity_estimate)]
-                : []
-
-            if (operator === 'more than') {
-                filtered.push(
-                    ...copy.filter(
-                        item =>
-                            parseInt(item.features[0].properties.capacity_estimate) >
-                            parseInt(slider),
-                    ),
-                )
-            } else if (operator === 'less than') {
-                filtered.push(
-                    ...copy.filter(
-                        item =>
-                            parseInt(item.features[0].properties.capacity_estimate) <
-                            parseInt(slider),
-                    ),
-                )
-            } else if (operator === 'equal') {
-                filtered.push(
-                    ...copy.filter(
-                        item =>
-                            parseInt(item.features[0].properties.capacity_estimate) ===
-                            parseInt(slider),
-                    ),
-                )
-            }
-
-            parkingDataDispatch({
-                type: 'SET_FILTERED_LOCATIONS',
-                payload: filtered,
-            })
-        })()
-    }, [checkbox, locations, operator, parkingDataDispatch, slider])
 
     return (
         <Draggable
@@ -119,34 +72,7 @@ export default function Window() {
                         marginBottom: 3,
                         textAlign: 'center',
                     }}>
-                    Filters:
-                    <br />
-                    Parking capacity (estimate):
-                    <br />
-                    <div className='disable'>
-                        <select onChange={e => setOperator(e.target.value)}>
-                            <option value='more than'>More than</option>
-                            <option value='less than'>Less than</option>
-                            <option value='equal'>Equal</option>
-                        </select>
-                        <input
-                            type='range'
-                            min='0'
-                            max={maxCapacity}
-                            value={slider}
-                            class='slider'
-                            onChange={event => setSlider(event.target.value)}
-                        />
-                        <br />
-                        {slider}
-                        <br />
-                        Show unknown capacity estimate:{' '}
-                        <input
-                            type='checkbox'
-                            checked={checkbox}
-                            onChange={event => setCheckbox(event.target.checked)}
-                        />
-                    </div>
+                    <Filter />
                 </div>
                 <div
                     style={{
