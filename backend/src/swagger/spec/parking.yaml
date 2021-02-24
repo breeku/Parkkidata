@@ -34,19 +34,25 @@ components:
         Parking_Area:
             type: object
             properties:
-                id:
-                    type: integer
-                uid:
+                type:
                     type: string
-                geometry:
-                    $ref: '#/components/definitions/MultiPolygon'
-                capacity_estimate:
-                    type: integer
-                    nullable: true
-                    example: 14
-                created_at:
-                    type: string
-                    format: date-time
-                updated_at:
-                    type: string
-                    format: date-time
+                    example: 'FeatureCollection'
+                features:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            type:
+                                type: string
+                                example: 'Feature'
+                            geometry:
+                                $ref: '#/components/definitions/MultiPolygon'
+                            properties:
+                                type: object
+                                properties:
+                                    capacity_estimate:
+                                        type: integer,
+                                        nullable: true
+                                        example: 14
+                                    uid:
+                                        type: string
