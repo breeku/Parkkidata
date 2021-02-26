@@ -19,7 +19,6 @@ export default function Filter() {
 
     useEffect(() => {
         ;(() => {
-            console.log(checkbox, operator, slider)
             const copy = [...locations]
             let filtered = checkbox
                 ? [...copy.filter(item => !item.features[0].properties.capacity_estimate)]
