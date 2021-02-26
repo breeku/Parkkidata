@@ -18,3 +18,4 @@ jobs:
                   PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
                   HOST: api.opentrackmania.com
                   PROJECT: parkkihubi
+                  BRANCH: main
