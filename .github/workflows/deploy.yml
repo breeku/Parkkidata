@@ -2,7 +2,9 @@ name: Deploy dokku
 on:
     push:
         branches:
-            - master
+            - main
+        paths:
+        - 'backend/**'
 
 jobs:
     build:
