@@ -157,7 +157,7 @@ router.get('/parking_area_statistics/uid/:uid', async (req, res) => {
  */
 router.get('/parking_area_statistics/popular/:limit/:hours', async (req, res) => {
     let result = []
-    const { limit, hours } = req.params // could supply here with date range rathen than days from now
+    const { limit, hours } = req.params // could supply here with date range rather than days from now
 
     try {
         if (hours / 24 < 1) throw 'Invalid hours!'
@@ -175,7 +175,7 @@ router.get('/parking_area_statistics/popular/:limit/:hours', async (req, res) =>
                 .coordinates[0][0][0] // change this
             // TODO: add the street name's
 
-            const history = await getParkingHistoryByUid(uid, hours) // make a func that accepts array
+            const history = await getParkingHistoryByUid(uid, hours) // should make a func that accepts array as looping and selecting is slow
             result.push({ ...history, long: coords[0], lat: coords[1], parking_sum })
         }
 
