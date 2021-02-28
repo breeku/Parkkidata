@@ -1,8 +1,12 @@
 const express = require('express')
 const axios = require('axios')
 const router = express.Router()
-const { getParkingAreas } = require('../database/queries/parking_area')
-const { getParkingHistoryByUid } = require('../database/queries/parking_area')
+const {
+    getParkingAreas,
+    getParkingHistoryByUid,
+    getPopularParkingAreas,
+    getParkingAreasByArray,
+} = require('../database/queries/parking_area')
 const BASEURL = 'https://pubapi.parkkiopas.fi/public/v1'
 
 /**
@@ -137,6 +141,44 @@ router.get('/parking_area_statistics/uid/:uid', async (req, res) => {
     try {
         const { data } = await axios.get(BASEURL + '/parking_area_statistics/' + uid)
         const result = { uid: data.id, current_parking_count: data.current_parking_count }
+        res.send(result)
+    } catch (e) {
+        console.error(e)
+        if (e.response) {
+            res.status(e.response.status)
+        }
+    }
+})
+
+/**
+ * @swagger
+ * /api/parking_area_statistics/popular/{limit}/{hours}:
+ *
+ */
+router.get('/parking_area_statistics/popular/:limit/:hours', async (req, res) => {
+    let result = []
+    const { limit, hours } = req.params // could supply here with date range rathen than days from now
+
+    try {
+        if (hours / 24 < 1) throw 'Invalid hours!'
+        // first get the most popular parking areas
+        const popularParkingAreas = await getPopularParkingAreas(hours, limit)
+
+        // then get the lat, long of the parking areas.
+        const parking_areas = await getParkingAreasByArray(
+            popularParkingAreas.map(item => item.uid),
+        )
+
+        // then get the history of all the parking areas
+        for (const { uid, parking_sum } of popularParkingAreas) {
+            const coords = parking_areas.find(item => item.uid === uid).geometry
+                .coordinates[0][0][0] // change this
+            // TODO: add the street name's
+
+            const history = await getParkingHistoryByUid(uid, hours) // make a func that accepts array
+            result.push({ ...history, long: coords[0], lat: coords[1], parking_sum })
+        }
+
         res.send(result)
     } catch (e) {
         console.error(e)
