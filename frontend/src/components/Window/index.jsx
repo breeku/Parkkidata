@@ -27,7 +27,7 @@ export default function Window() {
     }, [selected])
     return (
         <Draggable
-            defaultPosition={{ x: 0, y: 0 }}
+            defaultPosition={{ x: 45, y: 0 }}
             position={null}
             scale={1}
             cancel='.disable'>
@@ -40,7 +40,7 @@ export default function Window() {
                 }}>
                 <div
                     style={{
-                        backgroundColor: 'white',
+                        backgroundColor: 'green',
                         display: 'inline-block',
                         width: '300px',
                         padding: 10,
@@ -51,7 +51,7 @@ export default function Window() {
                 </div>
                 <div
                     style={{
-                        backgroundColor: 'white',
+                        backgroundColor: 'green',
                         display: 'inline-block',
                         width: '200px',
                         padding: 10,

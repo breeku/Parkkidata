@@ -34,7 +34,7 @@ export default function Graph({ uid }) {
     return (
         <div
             style={{
-                backgroundColor: "white",
+                backgroundColor: "#ceedfd",
                 display: "inline-block",
                 width: "400px",
                 height: "400px",
