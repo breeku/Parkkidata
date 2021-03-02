@@ -5,7 +5,6 @@ const {
     getParkingAreas,
     getParkingHistoryByUid,
     getPopularParkingAreas,
-    getParkingAreasByArray,
 } = require('../database/queries/parking_area')
 const BASEURL = 'https://pubapi.parkkiopas.fi/public/v1'
 
@@ -162,10 +161,8 @@ router.get(
         if ((from, to, limit, offset)) {
             const fromDate = new Date(decodeURIComponent(from))
             const toDate = new Date(decodeURIComponent(to))
-            const hours = Math.abs(fromDate.getTime() - toDate.getTime()) / 36e5 // hours between these two dates
 
             try {
-                if (hours / 24 < 1) throw 'Invalid hours!'
                 const popularParkingAreas = await getPopularParkingAreas(
                     fromDate,
                     toDate,

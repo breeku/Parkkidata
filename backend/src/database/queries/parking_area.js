@@ -1,14 +1,9 @@
-const { off } = require('../config')
 const knex = require('../config')
 
 // Database queries related to parking data
 
 const getParkingAreas = async () => {
     return await knex.from('parking_area').select()
-}
-
-const getParkingAreasByArray = async uids => {
-    return await knex.from('parking_area').select().whereIn('uid', uids)
 }
 
 const getParkingHistoryByUid = async (uid, limit) => {
@@ -57,5 +52,4 @@ module.exports = {
     getParkingAreas,
     getParkingHistoryByUid,
     getPopularParkingAreas,
-    getParkingAreasByArray,
 }
