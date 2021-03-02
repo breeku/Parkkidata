@@ -9,16 +9,19 @@ import { getParkingStatistics } from '../../services/parking'
 import Graph from '../Window/Graph/index'
 
 import Filter from './Filter'
+import Statistics from './Statistics'
 
 export default function Window() {
     const [parkingStatistics, setParkingStatistics] = useState(null)
+    const [current, setCurrent] = useState(true)
+    const [statistics, setStatistics] = useState(false)
 
     const {
         parkingDataState: { selected },
     } = useContext(ParkingDataContext)
 
     useEffect(() => {
-        ; (async () => {
+        ;(async () => {
             if (selected.uid) {
                 const { current_parking_count } = await getParkingStatistics(selected.uid)
                 setParkingStatistics(current_parking_count)
@@ -37,7 +40,16 @@ export default function Window() {
                     flexDirection: 'column',
                     alignItems: 'center',
                     position: 'absolute',
+                    cursor: 'grab',
                 }}>
+                <div style={{ marginBottom: 3 }}>
+                    <button onClick={() => (setCurrent(true), setStatistics(false))}>
+                        Current
+                    </button>
+                    <button onClick={() => (setCurrent(false), setStatistics(true))}>
+                        Statistics
+                    </button>
+                </div>
                 <div
                     style={{
                         backgroundColor: 'white',
@@ -47,24 +59,34 @@ export default function Window() {
                         marginBottom: 3,
                         textAlign: 'center',
                     }}>
-                    <Filter />
+                    {current && (
+                        <>
+                            <Filter />
+
+                            {selected.uid && (
+                                <>
+                                    <div
+                                        style={{
+                                            backgroundColor: 'white',
+                                            display: 'inline-block',
+                                            width: '200px',
+                                            padding: 10,
+                                            textAlign: 'center',
+                                        }}>
+                                        uid: {selected?.uid}
+                                        <br />
+                                        capacity estimate:{' '}
+                                        {selected?.capacity_estimate || 'unknown'}
+                                        <br />
+                                        current parking count: {parkingStatistics}
+                                    </div>
+                                    <Graph uid={selected.uid} />
+                                </>
+                            )}
+                        </>
+                    )}
+                    {statistics && <Statistics />}
                 </div>
-                <div
-                    style={{
-                        backgroundColor: 'white',
-                        display: 'inline-block',
-                        width: '200px',
-                        padding: 10,
-                        textAlign: 'center',
-                    }}>
-                    uid: {selected?.uid}
-                    <br />
-                    capacity estimate: {selected?.capacity_estimate || 'unknown'}
-                    <br />
-                    current parking count: {parkingStatistics}
-                </div>
-                {selected.uid && <Graph uid={selected.uid} />
-                }
             </div>
         </Draggable>
     )

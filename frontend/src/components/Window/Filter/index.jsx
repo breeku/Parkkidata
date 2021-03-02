@@ -63,7 +63,7 @@ export default function Filter() {
             <br />
             Parking capacity (estimate):
             <br />
-            <div className='disable'>
+            <div className='disable' style={{ cursor: 'pointer' }}>
                 <select onChange={e => setOperator(e.target.value)}>
                     <option value='more than'>More than</option>
                     <option value='less than'>Less than</option>

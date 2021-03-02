@@ -1,3 +1,4 @@
+const { off } = require('../config')
 const knex = require('../config')
 
 // Database queries related to parking data
@@ -19,32 +20,37 @@ const getParkingHistoryByUid = async (uid, limit) => {
         .limit(limit)
 }
 
-const getPopularParkingAreas = async (hours, limit) => {
-    const toDate = new Date()
-    const fromDate = new Date(
-        new Date().setDate(Math.floor(toDate.getDate() - hours / 24)),
-    )
-
-    const { rows } = await knex.raw(
-        `
-        SELECT *
-        FROM (
-            SELECT uid, SUM(current_parking_count) AS parking_sum
-            FROM parking_area_statistics
-            WHERE created_at
-            BETWEEN ?
-            AND ?
-            GROUP BY uid
-        ) t
-        WHERE parking_sum > 0
-        ORDER BY parking_sum DESC
-        LIMIT ?
-        ;
-        `,
-        [fromDate, toDate, limit],
-    )
-
-    return rows
+const getPopularParkingAreas = async (fromDate, toDate, limit, offset) => {
+    // TODO: add street names
+    return await knex
+        .select('*')
+        .from(
+            knex('parking_area_statistics as p_statistics')
+                .select([
+                    'p_statistics.uid',
+                    knex.raw(
+                        `JSON_AGG(
+                            JSON_BUILD_OBJECT(
+                                'current_parking_count', current_parking_count, 
+                                'created_at', p_statistics.created_at
+                            )
+                            ORDER BY p_statistics.id DESC
+                            ) 
+                            AS history`,
+                    ),
+                ])
+                .sum('current_parking_count AS parking_sum')
+                .whereBetween('p_statistics.created_at', [fromDate, toDate])
+                .groupBy('p_statistics.uid')
+                .join('parking_area AS p', 'p_statistics.uid', '=', 'p.uid')
+                .select('geometry')
+                .groupBy('p.id')
+                .as('t'),
+        )
+        .where('parking_sum', '>', 0)
+        .orderBy('parking_sum', 'desc')
+        .limit(limit)
+        .offset(offset)
 }
 
 module.exports = {

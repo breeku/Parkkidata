@@ -152,40 +152,37 @@ router.get('/parking_area_statistics/uid/:uid', async (req, res) => {
 
 /**
  * @swagger
- * /api/parking_area_statistics/popular/{limit}/{hours}:
+ * /api/parking_area_statistics/popular/{from}/{to}/{limit}/{offset}:
  *
  */
-router.get('/parking_area_statistics/popular/:limit/:hours', async (req, res) => {
-    let result = []
-    const { limit, hours } = req.params // could supply here with date range rather than days from now
+router.get(
+    '/parking_area_statistics/popular/:from/:to/:limit/:offset',
+    async (req, res) => {
+        const { from, to, limit, offset } = req.params
+        if ((from, to, limit, offset)) {
+            const fromDate = new Date(decodeURIComponent(from))
+            const toDate = new Date(decodeURIComponent(to))
+            const hours = Math.abs(fromDate.getTime() - toDate.getTime()) / 36e5 // hours between these two dates
 
-    try {
-        if (hours / 24 < 1) throw 'Invalid hours!'
-        // first get the most popular parking areas
-        const popularParkingAreas = await getPopularParkingAreas(hours, limit)
-
-        // then get the lat, long of the parking areas.
-        const parking_areas = await getParkingAreasByArray(
-            popularParkingAreas.map(item => item.uid),
-        )
-
-        // then get the history of all the parking areas
-        for (const { uid, parking_sum } of popularParkingAreas) {
-            const coords = parking_areas.find(item => item.uid === uid).geometry
-                .coordinates[0][0][0] // change this
-            // TODO: add the street name's
-
-            const history = await getParkingHistoryByUid(uid, hours) // should make a func that accepts array as looping and selecting is slow
-            result.push({ ...history, long: coords[0], lat: coords[1], parking_sum })
+            try {
+                if (hours / 24 < 1) throw 'Invalid hours!'
+                const popularParkingAreas = await getPopularParkingAreas(
+                    fromDate,
+                    toDate,
+                    limit,
+                    offset,
+                )
+                res.send(popularParkingAreas)
+            } catch (e) {
+                console.error(e)
+                if (e.response) {
+                    res.status(e.response.status)
+                }
+            }
+        } else {
+            res.status(400)
         }
-
-        res.send(result)
-    } catch (e) {
-        console.error(e)
-        if (e.response) {
-            res.status(e.response.status)
-        }
-    }
-})
+    },
+)
 
 module.exports = router
