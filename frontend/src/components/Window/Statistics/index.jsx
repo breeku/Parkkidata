@@ -28,7 +28,7 @@ export default function Statistics() {
     useEffect(() => {
         ;(async () => {
             const data = await getPopularParkingAreas(fromDate, toDate, limit, offset)
-            setStatistics(stats => [...stats, ...data])
+            offset > 0 ? setStatistics(stats => [...stats, ...data]) : setStatistics(data)
         })()
     }, [fromDate, toDate, limit, offset])
 
@@ -52,8 +52,14 @@ export default function Statistics() {
 
     return (
         <div style={{ width: 400 }}>
-            <DatePicker selected={fromDate} onChange={date => setFromDate(date)} />
-            <DatePicker selected={toDate} onChange={date => setToDate(date)} />
+            <DatePicker
+                selected={fromDate}
+                onChange={date => (setOffset(0), setFromDate(date))}
+            />
+            <DatePicker
+                selected={toDate}
+                onChange={date => (setOffset(0), setToDate(date))}
+            />
             <InfiniteScroll
                 dataLength={statistics.length}
                 next={() => setOffset(offset + limit)}
