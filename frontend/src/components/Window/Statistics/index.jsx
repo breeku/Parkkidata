@@ -40,7 +40,7 @@ export default function Statistics() {
                 uid: item.uid,
                 list: item.history,
             })
-            const coords = [...item.geometry.coordinates[0][0].map(arr => arr.reverse())] // clone geojson array and reverse the coords
+            const coords = item.geometry.coordinates[0][0].map(arr => [...arr].reverse()) // map and copy coords, then reverse the arr since they are geojson
             map.flyToBounds(coords, 19)
 
             const layer = Object.values(map._layers).find(
