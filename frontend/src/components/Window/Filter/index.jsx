@@ -18,7 +18,7 @@ export default function Filter() {
     const [operator, setOperator] = useState('more than')
 
     useEffect(() => {
-        ;(() => {
+        ; (() => {
             const copy = [...locations]
             let filtered = checkbox
                 ? [...copy.filter(item => !item.features[0].properties.capacity_estimate)]
@@ -63,7 +63,9 @@ export default function Filter() {
             <br />
             Parking capacity (estimate):
             <br />
-            <div className='disable'>
+            <div
+                data-testid="filter"
+                className='disable'>
                 <select onChange={e => setOperator(e.target.value)}>
                     <option value='more than'>More than</option>
                     <option value='less than'>Less than</option>

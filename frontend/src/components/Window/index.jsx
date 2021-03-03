@@ -32,6 +32,7 @@ export default function Window() {
             scale={1}
             cancel='.disable'>
             <div
+                data-testid="dragStats"
                 style={{
                     display: 'inline-flex',
                     flexDirection: 'column',
