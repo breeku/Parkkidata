@@ -39,10 +39,11 @@ export default function Statistics() {
                 uid: item.uid,
                 list: item.history,
             })
-            const coords = [...item.geometry.coordinates[0][0][0]] // clone one corner of a polygon
-            map.flyTo(coords.reverse(), 17) // needs to be reversed as it's geojson
+            const coords = [...item.geometry.coordinates[0][0].map(arr => arr.reverse())] // clone geojson array and reverse the coords
+            map.flyToBounds(coords, 19)
         }
     }
+
     return (
         <div style={{ width: 400 }}>
             <DatePicker selected={fromDate} onChange={date => setFromDate(date)} />
