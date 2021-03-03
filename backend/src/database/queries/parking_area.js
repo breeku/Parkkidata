@@ -38,7 +38,7 @@ const getPopularParkingAreas = async (fromDate, toDate, limit, offset) => {
                 .whereBetween('p_statistics.created_at', [fromDate, toDate])
                 .groupBy('p_statistics.uid')
                 .join('parking_area AS p', 'p_statistics.uid', '=', 'p.uid')
-                .select('geometry')
+                .select(['geometry', 'capacity_estimate'])
                 .groupBy('p.id')
                 .as('t'),
         )

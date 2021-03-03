@@ -10,6 +10,7 @@ import { getPopularParkingAreas } from '../../../services/parking'
 import { MapContext } from '../../../context/map'
 
 import Graph from '../Graph'
+import Selected from '../Selected'
 
 export default function Statistics() {
     const [statistics, setStatistics] = useState([])
@@ -39,6 +40,7 @@ export default function Statistics() {
             setHistory({
                 uid: item.uid,
                 list: item.history,
+                capacity_estimate: item.capacity_estimate,
             })
             const coords = item.geometry.coordinates[0][0].map(arr => [...arr].reverse()) // map and copy coords, then reverse the arr since they are geojson
             map.flyToBounds(coords, 19)
@@ -96,7 +98,17 @@ export default function Statistics() {
                     </div>
                 ))}
             </InfiniteScroll>
-            {history?.list && <Graph propsParkingHistory={history.list} />}
+            {history?.list && (
+                <>
+                    <Selected
+                        selected={{
+                            uid: history.uid,
+                            capacity_estimate: history.capacity_estimate,
+                        }}
+                    />
+                    <Graph propsParkingHistory={history.list} />
+                </>
+            )}
         </div>
     )
 }
