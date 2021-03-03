@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useRef } from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet'
 
@@ -13,7 +13,10 @@ export default function Map() {
         parkingDataState: { filtered },
         parkingDataDispatch,
     } = useContext(ParkingDataContext)
-    const { mapDispatch } = useContext(MapContext)
+    const {
+        mapState: { highlight, reset },
+        mapDispatch,
+    } = useContext(MapContext)
     const geoJsonLayer = useRef(null)
 
     useEffect(() => {
@@ -26,10 +29,16 @@ export default function Map() {
     }, [parkingDataDispatch])
 
     useEffect(() => {
-        if (geoJsonLayer.current) {
-            geoJsonLayer.current.clearLayers().addData(filtered)
-        }
+        geoJsonLayer.current?.clearLayers().addData(filtered)
     }, [filtered])
+
+    useEffect(() => {
+        highlight?.setStyle({ color: 'red' })
+    }, [highlight])
+
+    useEffect(() => {
+        geoJsonLayer.current?.resetStyle(reset)
+    }, [reset])
 
     const onEachFeature = (feature, layer) => {
         layer.on({
@@ -43,6 +52,8 @@ export default function Map() {
                         uid: properties.uid,
                     },
                 })
+
+                mapDispatch({ type: 'HIGHLIGHT', payload: { highlight: layer } })
             },
         })
     }

@@ -22,6 +22,7 @@ export default function Statistics() {
     const [history, setHistory] = useState(null)
     const {
         mapState: { map },
+        mapDispatch,
     } = useContext(MapContext)
 
     useEffect(() => {
@@ -41,6 +42,11 @@ export default function Statistics() {
             })
             const coords = [...item.geometry.coordinates[0][0].map(arr => arr.reverse())] // clone geojson array and reverse the coords
             map.flyToBounds(coords, 19)
+
+            const layer = Object.values(map._layers).find(
+                layer => layer.feature?.properties.uid === item.uid,
+            ) // probs bad
+            mapDispatch({ type: 'HIGHLIGHT', payload: { highlight: layer } })
         }
     }
 
