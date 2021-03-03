@@ -52,11 +52,9 @@ export default function Window() {
                 </div>
                 <div
                     style={{
-                        backgroundColor: 'white',
-                        display: 'inline-block',
-                        width: '300px',
-                        padding: 10,
-                        marginBottom: 3,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
                         textAlign: 'center',
                     }}>
                     {current && (
@@ -71,6 +69,8 @@ export default function Window() {
                                             display: 'inline-block',
                                             width: '200px',
                                             padding: 10,
+                                            marginTop: 3,
+                                            marginBottom: 3,
                                             textAlign: 'center',
                                         }}>
                                         uid: {selected?.uid}

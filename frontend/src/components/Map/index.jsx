@@ -6,11 +6,14 @@ import { getParkingLocations } from '../../services/parking'
 
 import { ParkingDataContext } from '../../context/parking_data'
 
+import { MapContext } from '../../context/map'
+
 export default function Map() {
     const {
         parkingDataState: { filtered },
         parkingDataDispatch,
     } = useContext(ParkingDataContext)
+    const { mapDispatch } = useContext(MapContext)
     const geoJsonLayer = useRef(null)
 
     useEffect(() => {
@@ -43,8 +46,12 @@ export default function Map() {
             },
         })
     }
+
     return (
-        <MapContainer center={[60.1699, 24.9384]} zoom={13}>
+        <MapContainer
+            center={[60.1699, 24.9384]}
+            zoom={13}
+            whenCreated={map => mapDispatch({ type: 'SET_MAP', payload: map })}>
             <TileLayer
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'

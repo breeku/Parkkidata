@@ -48,7 +48,6 @@ export default function Graph({ uid, propsParkingHistory }) {
                 display: 'inline-block',
                 width: '400px',
                 height: '400px',
-                marginTop: 3,
                 overflow: 'auto',
                 marginLeft: '0',
             }}>

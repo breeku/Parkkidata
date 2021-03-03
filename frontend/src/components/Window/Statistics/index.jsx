@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
+import InfiniteScroll from 'react-infinite-scroll-component'
+
 import { getPopularParkingAreas } from '../../../services/parking'
+
+import { MapContext } from '../../../context/map'
 
 import Graph from '../Graph'
 
@@ -13,49 +17,72 @@ export default function Statistics() {
         new Date(new Date().setDate(new Date().getDate() - 1)),
     )
     const [toDate, setToDate] = useState(new Date())
-    const [limit, setLimit] = useState(5) // TODO
-    const [offset, setOffset] = useState(0) // TODO
+    const [limit, setLimit] = useState(5)
+    const [offset, setOffset] = useState(0)
     const [history, setHistory] = useState(null)
+    const {
+        mapState: { map },
+    } = useContext(MapContext)
 
     useEffect(() => {
         ;(async () => {
-            setStatistics(await getPopularParkingAreas(fromDate, toDate, limit, offset))
+            const data = await getPopularParkingAreas(fromDate, toDate, limit, offset)
+            setStatistics(stats => [...stats, ...data])
         })()
     }, [fromDate, toDate, limit, offset])
 
+    const handleSelectParking = item => {
+        if (item.uid === history?.uid) {
+            setHistory(null)
+        } else {
+            setHistory({
+                uid: item.uid,
+                list: item.history,
+            })
+            const coords = [...item.geometry.coordinates[0][0][0]] // clone one corner of a polygon
+            map.flyTo(coords.reverse(), 17) // needs to be reversed as it's geojson
+        }
+    }
     return (
-        <div>
+        <div style={{ width: 400 }}>
             <DatePicker selected={fromDate} onChange={date => setFromDate(date)} />
             <DatePicker selected={toDate} onChange={date => setToDate(date)} />
-            {statistics.map(item => (
-                <div
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        margin: 'auto',
-                        flexDirection: 'column',
-                    }}>
+            <InfiniteScroll
+                dataLength={statistics.length}
+                next={() => setOffset(offset + limit)}
+                hasMore={true}
+                loader={<h4>Loading...</h4>}
+                endMessage={<h4>No more results</h4>}
+                height={200}>
+                {statistics.map(item => (
                     <div
                         style={{
-                            backgroundColor: 'grey',
-                            width: '100%',
-                            cursor: 'pointer',
-                            marginBottom: 5,
-                            marginTop: 5,
-                            height: 40,
-                        }}
-                        onClick={() =>
-                            item.uid === history?.uid
-                                ? setHistory(null)
-                                : setHistory({
-                                      uid: item.uid,
-                                      list: item.history,
-                                  })
-                        }>
-                        total: {item.parking_sum}
+                            display: 'flex',
+                            justifyContent: 'center',
+                            margin: 'auto',
+                            flexDirection: 'column',
+                        }}>
+                        <div
+                            style={{
+                                backgroundColor: 'grey',
+                                width: '100%',
+                                cursor: 'pointer',
+                                marginBottom: 5,
+                                marginTop: 5,
+                                height: 40,
+                            }}
+                            onClick={() => handleSelectParking(item)}>
+                            [
+                            {item.geometry.coordinates[0][0][0].map(
+                                coord => ' ' + coord.toFixed(2) + ' ',
+                            )}
+                            ]
+                            <br />
+                            total: {item.parking_sum}
+                        </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </InfiniteScroll>
             {history?.list && <Graph propsParkingHistory={history.list} />}
         </div>
     )

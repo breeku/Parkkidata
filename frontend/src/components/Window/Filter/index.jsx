@@ -58,7 +58,7 @@ export default function Filter() {
     }, [checkbox, locations, operator, parkingDataDispatch, slider])
 
     return (
-        <>
+        <div style={{ backgroundColor: 'white', padding: 10 }}>
             Filters:
             <br />
             Parking capacity (estimate):
@@ -87,6 +87,6 @@ export default function Filter() {
                     onChange={event => setCheckbox(event.target.checked)}
                 />
             </div>
-        </>
+        </div>
     )
 }
