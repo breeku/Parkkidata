@@ -37,7 +37,7 @@ export default function Graph({ uid }) {
     return (
         <div
             style={{
-                backgroundColor: '#99ff99',
+                backgroundColor: '#e6ffff',
                 display: 'inline-block',
                 width: '400px',
                 height: '400px',
