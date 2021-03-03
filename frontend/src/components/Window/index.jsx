@@ -12,13 +12,14 @@ import Filter from './Filter'
 
 export default function Window() {
     const [parkingStatistics, setParkingStatistics] = useState(null)
+    const [dragging, setDragging] = useState(false)
 
     const {
         parkingDataState: { selected },
     } = useContext(ParkingDataContext)
 
     useEffect(() => {
-        ; (async () => {
+        ;(async () => {
             if (selected.uid) {
                 const { current_parking_count } = await getParkingStatistics(selected.uid)
                 setParkingStatistics(current_parking_count)
@@ -30,13 +31,16 @@ export default function Window() {
             defaultPosition={{ x: 45, y: 0 }}
             position={null}
             scale={1}
-            cancel='.disable'>
+            cancel='.disable'
+            onDrag={() => setDragging(true)}
+            onStop={() => setDragging(false)}>
             <div
                 style={{
                     display: 'inline-flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     position: 'absolute',
+                    opacity: dragging ? '0.5' : '1.0',
                 }}>
                 <div
                     style={{
@@ -63,8 +67,7 @@ export default function Window() {
                     <br />
                     current parking count: {parkingStatistics}
                 </div>
-                {selected.uid && <Graph uid={selected.uid} />
-                }
+                {selected.uid && <Graph uid={selected.uid} />}
             </div>
         </Draggable>
     )
