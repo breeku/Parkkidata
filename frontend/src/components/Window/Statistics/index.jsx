@@ -27,7 +27,7 @@ export default function Statistics() {
     } = useContext(MapContext)
 
     useEffect(() => {
-        ;(async () => {
+        ; (async () => {
             const data = await getPopularParkingAreas(fromDate, toDate, limit, offset)
             offset > 0 ? setStatistics(stats => [...stats, ...data]) : setStatistics(data)
         })()
@@ -44,7 +44,6 @@ export default function Statistics() {
             })
             const coords = item.geometry.coordinates[0][0].map(arr => [...arr].reverse()) // map and copy coords, then reverse the arr since they are geojson
             map.flyToBounds(coords, 19)
-
             const layer = Object.values(map._layers).find(
                 layer => layer.feature?.properties.uid === item.uid,
             ) // probs bad

@@ -6,6 +6,7 @@ exports.up = (knex) => {
         table.integer("capacity_estimate")
         table.timestamp("created_at").defaultTo(knex.fn.now())
         table.timestamp("updated_at").defaultTo(knex.fn.now())
+        table.string("road")
     })
 }
 
