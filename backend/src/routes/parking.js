@@ -152,6 +152,66 @@ router.get('/parking_area_statistics/uid/:uid', async (req, res) => {
 /**
  * @swagger
  * /api/parking_area_statistics/popular/{from}/{to}/{limit}/{offset}:
+ *   get:
+ *     summary: Get a list of parking areas' parking count in descending Order
+ *     description: Fetch parking statistics of the parking area.
+ *     parameters:
+ *       - in: path
+ *         name: from
+ *         schema:
+ *           type: date-time
+ *         required: true
+ *         description: date to start
+ *       - in: path
+ *         name: to
+ *         schema:
+ *           type: date-time
+ *         required: true
+ *         description: date to end
+ *       - in: path
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: how many parking areas is shown
+ *       - in: path
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: a number of records you wish to skip before selecting parking area records.
+ *     responses:
+ *       200:
+ *         description: The requested parking area parking statistics
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   uid:
+ *                     type: string
+ *                   history:
+ *                     type: array
+ *                     items:
+ *                       allOf:
+ *                         - $ref: '#/components/schemas/Parking_Area_Statistics'
+ *                         - type: object
+ *                           properties:
+ *                             createdAt:
+ *                               type: date-time
+ *                               example: "2021-03-05T11:03:30.918941+00:00"
+ *                   parking_sum:
+ *                     type: string
+ *                   geometry:
+ *                     $ref: '#/components/definitions/MultiPolygon'
+ *                   capacity_estimate:
+ *                     type: integer
+ *       304:
+ *         description: The requested parking area statistics not modified
+ *       400:
+ *         description: Bad request
  *
  */
 router.get(
