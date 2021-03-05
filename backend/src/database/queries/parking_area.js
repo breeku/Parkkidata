@@ -16,7 +16,6 @@ const getParkingHistoryByUid = async (uid, limit) => {
 }
 
 const getPopularParkingAreas = async (fromDate, toDate, limit, offset) => {
-    // TODO: add street names
     return await knex
         .select('*')
         .from(
