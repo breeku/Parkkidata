@@ -161,13 +161,13 @@ router.get('/parking_area_statistics/uid/:uid', async (req, res) => {
  *         schema:
  *           type: date-time
  *         required: true
- *         description: date to start
+ *         description: starting date of parking records
  *       - in: path
  *         name: to
  *         schema:
  *           type: date-time
  *         required: true
- *         description: date to end
+ *         description: ending date of parking records
  *       - in: path
  *         name: limit
  *         schema:
