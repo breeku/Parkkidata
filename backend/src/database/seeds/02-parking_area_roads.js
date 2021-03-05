@@ -1,32 +1,27 @@
-const axios = require("axios")
+const fs = require('fs')
 
-async function getRoad(lat, long) {
-  let address
-  await axios
-    .get('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + long + '&format=json')
-    .then(response => {
-      address = response.data
-    })
-  return address.address.road
-}
+const stringified = fs.readFileSync('./src/database/utils/roads.json')
+const data = JSON.parse(stringified)
 
-exports.seed = function (knex) {
-  return knex("parking_area")
-    .then(async function () {
-      try {
-        const data = await knex.from('parking_area').select()
-        for (const feature of data) {
-          const long = feature.geometry.coordinates[0][0][0][0]
-          const lat = feature.geometry.coordinates[0][0][0][1]
-          let address = await getRoad(lat, long)
-          console.log(address)
-          await knex("parking_area").where({ id: feature.id }).update({
-            road: address,
-          })
+exports.seed = async function (knex) {
+    return await knex.transaction(trx => {
+        const queries = []
+        for (const { uid, road, house_number } of data) {
+            if ((road, house_number)) {
+                const query = knex('parking_area')
+                    .where({ uid })
+                    .update({
+                        road,
+                        house_number,
+                    })
+                    .transacting(trx) // This makes every update be in the same transaction
+
+                queries.push(query)
+            }
         }
-      } catch (e) {
-        console.error(e)
-      }
-      return
+
+        Promise.all(queries) // Once every query is written
+            .then(trx.commit) // We try to execute all of them
+            .catch(trx.rollback) // And rollback in case any of them goes wrong
     })
 }
