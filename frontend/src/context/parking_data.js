@@ -7,6 +7,7 @@ export const parkingDataInitialState = {
         uid: null,
         capacity_estimate: null,
     },
+    history: [],
     locations: [],
     filtered: [],
 }
@@ -28,6 +29,11 @@ export const parkingDataReducer = (state, action) => {
             return {
                 ...state,
                 filtered: [...action.payload],
+            }
+        case 'SET_HISTORY':
+            return {
+                ...state,
+                history: [...action.payload],
             }
         default:
             return state

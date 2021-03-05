@@ -4,24 +4,20 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts'
 
 import { getParkingHistory } from '../../../services/parking'
 
-export default function Graph({ uid, propsParkingHistory }) {
+export default function Graph({ uid, history }) {
     const [parkingHistory, setParkingHistory] = useState(null)
     const [limit, setLimit] = useState(24)
 
     useEffect(() => {
-        if (propsParkingHistory) {
-            setParkingHistory(propsParkingHistory)
-        }
-    }, [propsParkingHistory])
-
-    useEffect(() => {
         ;(async () => {
-            if (uid) {
+            if (uid && !history) {
                 const current_parking_history = await getParkingHistory(uid, limit)
                 setParkingHistory(current_parking_history)
+            } else {
+                setParkingHistory(history)
             }
         })()
-    }, [limit, uid])
+    }, [history, limit, uid])
 
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
