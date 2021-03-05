@@ -47,18 +47,14 @@ export default function Window() {
                         alignItems: 'center',
                         textAlign: 'center',
                     }}>
-                    {filters && (
+                    {filters && <Filter />}
+                    {statistics && <Statistics />}
+                    {selected.uid && (
                         <>
-                            <Filter />
-                            {selected.uid && (
-                                <>
-                                    <Selected selected={selected} />
-                                    <Graph uid={selected.uid} />
-                                </>
-                            )}
+                            <Selected selected={selected} />
+                            <Graph />
                         </>
                     )}
-                    {statistics && <Statistics />}
                 </div>
             </div>
         </Draggable>

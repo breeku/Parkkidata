@@ -8,9 +8,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { getPopularParkingAreas } from '../../../services/parking'
 
 import { MapContext } from '../../../context/map'
-
-import Graph from '../Graph'
-import Selected from '../Selected'
+import { ParkingDataContext } from '../../../context/parking_data'
 
 export default function Statistics() {
     const [statistics, setStatistics] = useState([])
@@ -20,11 +18,15 @@ export default function Statistics() {
     const [toDate, setToDate] = useState(new Date())
     const [limit, setLimit] = useState(5)
     const [offset, setOffset] = useState(0)
-    const [history, setHistory] = useState(null)
+
     const {
         mapState: { map },
         mapDispatch,
     } = useContext(MapContext)
+    const {
+        parkingDataState: { selected },
+        parkingDataDispatch,
+    } = useContext(ParkingDataContext)
 
     useEffect(() => {
         ; (async () => {
@@ -34,14 +36,19 @@ export default function Statistics() {
     }, [fromDate, toDate, limit, offset])
 
     const handleSelectParking = item => {
-        if (item.uid === history?.uid) {
-            setHistory(null)
+        if (item.uid === selected?.uid) {
+            parkingDataDispatch({ type: 'SET_HISTORY', payload: [] })
         } else {
-            setHistory({
-                uid: item.uid,
-                list: item.history,
-                capacity_estimate: item.capacity_estimate,
+            parkingDataDispatch({
+                type: 'SET_PARKING_DATA',
+                payload: {
+                    uid: item.uid,
+                    capacity_estimate: item.capacity_estimate,
+                    statistics: true,
+                },
             })
+            parkingDataDispatch({ type: 'SET_HISTORY', payload: item.history })
+
             const coords = item.geometry.coordinates[0][0].map(arr => [...arr].reverse()) // map and copy coords, then reverse the arr since they are geojson
             map.flyToBounds(coords, 19)
             const layer = Object.values(map._layers).find(
@@ -97,17 +104,6 @@ export default function Statistics() {
                     </div>
                 ))}
             </InfiniteScroll>
-            {history?.list && (
-                <>
-                    <Selected
-                        selected={{
-                            uid: history.uid,
-                            capacity_estimate: history.capacity_estimate,
-                        }}
-                    />
-                    <Graph propsParkingHistory={history.list} />
-                </>
-            )}
         </div>
     )
 }
