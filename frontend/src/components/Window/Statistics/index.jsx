@@ -41,7 +41,11 @@ export default function Statistics() {
         } else {
             parkingDataDispatch({
                 type: 'SET_PARKING_DATA',
-                payload: { uid: item.uid, capacity_estimate: item.capacity_estimate },
+                payload: {
+                    uid: item.uid,
+                    capacity_estimate: item.capacity_estimate,
+                    statistics: true,
+                },
             })
             parkingDataDispatch({ type: 'SET_HISTORY', payload: item.history })
 

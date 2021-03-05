@@ -50,6 +50,7 @@ export default function Map() {
                     payload: {
                         capacity_estimate: properties.capacity_estimate,
                         uid: properties.uid,
+                        statistics: false,
                     },
                 })
 

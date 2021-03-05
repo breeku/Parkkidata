@@ -15,7 +15,7 @@ export default function Window() {
     const [statistics, setStatistics] = useState(false)
 
     const {
-        parkingDataState: { selected, history },
+        parkingDataState: { selected },
     } = useContext(ParkingDataContext)
 
     return (
@@ -52,7 +52,7 @@ export default function Window() {
                     {selected.uid && (
                         <>
                             <Selected selected={selected} />
-                            <Graph uid={selected.uid} history={history} />
+                            <Graph />
                         </>
                     )}
                 </div>

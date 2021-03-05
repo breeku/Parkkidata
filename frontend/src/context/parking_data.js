@@ -6,6 +6,7 @@ export const parkingDataInitialState = {
     selected: {
         uid: null,
         capacity_estimate: null,
+        statistics: false,
     },
     history: [],
     locations: [],

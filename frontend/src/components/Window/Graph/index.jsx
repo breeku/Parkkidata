@@ -1,23 +1,32 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts'
 
 import { getParkingHistory } from '../../../services/parking'
 
-export default function Graph({ uid, history }) {
-    const [parkingHistory, setParkingHistory] = useState(null)
+import { ParkingDataContext } from '../../../context/parking_data'
+
+export default function Graph() {
+    const {
+        parkingDataState: {
+            selected: { uid, statistics },
+            history,
+        },
+        parkingDataDispatch,
+    } = useContext(ParkingDataContext)
     const [limit, setLimit] = useState(24)
 
     useEffect(() => {
         ;(async () => {
-            if (uid && !history) {
+            if (!statistics) {
                 const current_parking_history = await getParkingHistory(uid, limit)
-                setParkingHistory(current_parking_history)
-            } else {
-                setParkingHistory(history)
+                parkingDataDispatch({
+                    type: 'SET_HISTORY',
+                    payload: current_parking_history,
+                })
             }
         })()
-    }, [history, limit, uid])
+    }, [limit, parkingDataDispatch, statistics, uid])
 
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
@@ -51,7 +60,7 @@ export default function Graph({ uid, history }) {
                 width={400}
                 height={380}
                 margin={{ right: 15, top: 5 }}
-                data={parkingHistory}>
+                data={history}>
                 <Line type='monotone' dataKey='current_parking_count' stroke='#8884d8' />
                 <CartesianGrid stroke='#ccc' strokeDasharray='1 1' />
                 <XAxis
@@ -66,7 +75,8 @@ export default function Graph({ uid, history }) {
                 <YAxis width={30} dataKey='current_parking_count' />
                 <Tooltip content={CustomTooltip} />
             </LineChart>
-            {uid && (
+
+            {!statistics && (
                 <label style={{ paddingLeft: '150px' }}>
                     limit:
                     <select
