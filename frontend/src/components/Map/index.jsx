@@ -14,7 +14,7 @@ export default function Map() {
     const geoJsonLayer = useRef(null)
 
     useEffect(() => {
-        ;(async () => {
+        ; (async () => {
             parkingDataDispatch({
                 type: 'SET_PARKING_LOCATIONS',
                 payload: await getParkingLocations(),
