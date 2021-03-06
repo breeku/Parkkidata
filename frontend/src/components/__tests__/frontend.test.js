@@ -3,8 +3,6 @@ import { render, screen, fireEvent, } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 import App from '../../App'
-import Statistics from '../Window/Statistics'
-
 
 test('should render App component wihtout crash', () => {
     render(<App />)
