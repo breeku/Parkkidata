@@ -27,8 +27,6 @@ export default function Selected({ selected }) {
                         marginBottom: 3,
                         textAlign: 'center',
                     }}>
-                    uid: {selected.uid}
-                    <br />
                     capacity estimate: {selected?.capacity_estimate || 'unknown'}
                     <br />
                     current parking count: {parkingStatistics}
