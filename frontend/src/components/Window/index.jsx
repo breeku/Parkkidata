@@ -13,6 +13,7 @@ import Selected from './Selected'
 export default function Window() {
     const [filters, setFilters] = useState(true)
     const [statistics, setStatistics] = useState(false)
+    const [dragging, setDragging] = useState(false)
 
     const {
         parkingDataState: { selected },
@@ -20,10 +21,12 @@ export default function Window() {
 
     return (
         <Draggable
-            defaultPosition={{ x: 0, y: 0 }}
+            defaultPosition={{ x: 40, y: 0 }}
             position={null}
             scale={1}
-            cancel='.disable'>
+            cancel='.disable'
+            onDrag={() => setDragging(true)}
+            onStop={() => setDragging(false)}>
             <div
                 style={{
                     display: 'inline-flex',
@@ -31,6 +34,7 @@ export default function Window() {
                     alignItems: 'center',
                     position: 'absolute',
                     cursor: 'grab',
+                    opacity: dragging ? '0.5' : '1.0',
                 }}>
                 <div style={{ marginBottom: 3 }}>
                     <button onClick={() => (setFilters(true), setStatistics(false))}>
