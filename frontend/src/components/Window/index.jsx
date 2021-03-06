@@ -21,7 +21,7 @@ export default function Window() {
 
     return (
         <Draggable
-            defaultPosition={{ x: 40, y: 0 }}
+            defaultPosition={{ x: 45, y: 0 }}
             position={null}
             scale={1}
             cancel='.disable'
