@@ -59,7 +59,8 @@ export default function Statistics() {
     }
 
     return (
-        <div style={{ width: 400 }}>
+        <div style={{ width: 400 }}
+            data-testid="statistics">
             <DatePicker
                 selected={fromDate}
                 onChange={date => (setOffset(0), setFromDate(date))}
@@ -99,6 +100,7 @@ export default function Statistics() {
                             )}
                             ]
                             <br />
+                            road: {item.road === null ? 'not available ' : item.road + ' ' + item.house_number + ' '}
                             total: {item.parking_sum}
                         </div>
                     </div>
