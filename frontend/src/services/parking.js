@@ -32,3 +32,22 @@ export const getParkingHistory = async (uid, limit) => {
         console.error(e)
     }
 }
+
+export const getPopularParkingAreas = async (fromDate, toDate, limit, offset) => {
+    try {
+        const { data } = await axios.get(
+            API +
+                '/parking_area_statistics/popular/' +
+                encodeURIComponent(fromDate) +
+                '/' +
+                encodeURIComponent(toDate) +
+                '/' +
+                limit +
+                '/' +
+                offset,
+        )
+        return data
+    } catch (e) {
+        console.error(e)
+    }
+}

@@ -4,27 +4,20 @@ import Draggable from 'react-draggable'
 
 import { ParkingDataContext } from '../../context/parking_data'
 
-import { getParkingStatistics } from '../../services/parking'
-
 import Graph from '../Window/Graph/index'
 
 import Filter from './Filter'
+import Statistics from './Statistics'
+import Selected from './Selected'
 
 export default function Window() {
-    const [parkingStatistics, setParkingStatistics] = useState(null)
+    const [filters, setFilters] = useState(true)
+    const [statistics, setStatistics] = useState(false)
 
     const {
         parkingDataState: { selected },
     } = useContext(ParkingDataContext)
 
-    useEffect(() => {
-        ; (async () => {
-            if (selected.uid) {
-                const { current_parking_count } = await getParkingStatistics(selected.uid)
-                setParkingStatistics(current_parking_count)
-            }
-        })()
-    }, [selected])
     return (
         <Draggable
             defaultPosition={{ x: 0, y: 0 }}
@@ -38,34 +31,32 @@ export default function Window() {
                     flexDirection: 'column',
                     alignItems: 'center',
                     position: 'absolute',
+                    cursor: 'grab',
                 }}>
-                <div
-                    style={{
-                        backgroundColor: 'white',
-                        display: 'inline-block',
-                        width: '300px',
-                        padding: 10,
-                        marginBottom: 3,
-                        textAlign: 'center',
-                    }}>
-                    <Filter />
+                <div style={{ marginBottom: 3 }}>
+                    <button onClick={() => (setFilters(true), setStatistics(false))}>
+                        Filters
+                    </button>
+                    <button onClick={() => (setFilters(false), setStatistics(true))}>
+                        Statistics
+                    </button>
                 </div>
                 <div
                     style={{
-                        backgroundColor: 'white',
-                        display: 'inline-block',
-                        width: '200px',
-                        padding: 10,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
                         textAlign: 'center',
                     }}>
-                    uid: {selected?.uid}
-                    <br />
-                    capacity estimate: {selected?.capacity_estimate || 'unknown'}
-                    <br />
-                    current parking count: {parkingStatistics}
+                    {filters && <Filter />}
+                    {statistics && <Statistics />}
+                    {selected.uid && (
+                        <>
+                            <Selected selected={selected} />
+                            <Graph />
+                        </>
+                    )}
                 </div>
-                {selected.uid && <Graph uid={selected.uid} />
-                }
             </div>
         </Draggable>
     )

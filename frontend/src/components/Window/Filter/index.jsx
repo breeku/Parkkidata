@@ -58,14 +58,12 @@ export default function Filter() {
     }, [checkbox, locations, operator, parkingDataDispatch, slider])
 
     return (
-        <>
+        <div style={{ backgroundColor: 'white', padding: 10 }}>
             Filters:
             <br />
             Parking capacity (estimate):
             <br />
-            <div
-                data-testid="filter"
-                className='disable'>
+            <div className='disable' data-testid="filter" style={{ cursor: 'pointer' }}>
                 <select onChange={e => setOperator(e.target.value)}>
                     <option value='more than'>More than</option>
                     <option value='less than'>Less than</option>
@@ -89,6 +87,6 @@ export default function Filter() {
                     onChange={event => setCheckbox(event.target.checked)}
                 />
             </div>
-        </>
+        </div>
     )
 }
