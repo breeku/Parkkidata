@@ -1,6 +1,8 @@
 const express = require('express')
 const axios = require('axios')
 const router = express.Router()
+const { param, validationResult } = require('express-validator')
+
 const {
     getParkingAreas,
     getParkingHistoryByUid,
@@ -92,19 +94,27 @@ router.get('/parking_area/', async (req, res) => {
  *         description: Internal server error
  *
  */
-router.get('/parking_history/uid/:uid/:limit', async (req, res) => {
-    const uid = req.params.uid
-    const limit = req.params.limit
-    try {
-        const data = await getParkingHistoryByUid(uid, limit)
-        if (data.length === 0) throw 'Not Found'
-        res.send(data)
-    } catch (e) {
-        console.error(e)
-        if (e === 'Not found') res.sendStatus(404)
-        res.sendStatus(500)
-    }
-})
+router.get(
+    '/parking_history/uid/:uid/:limit',
+    param('limit').toInt().isInt(),
+    async (req, res) => {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() })
+        }
+        const uid = req.params.uid
+        const limit = req.params.limit
+        try {
+            const data = await getParkingHistoryByUid(uid, limit)
+            if (data.length === 0) throw 'Not Found'
+            res.send(data)
+        } catch (e) {
+            console.error(e)
+            if (e === 'Not Found') res.sendStatus(404)
+            res.sendStatus(500)
+        }
+    },
+)
 
 /**
  * @swagger
@@ -144,7 +154,9 @@ router.get('/parking_area_statistics/uid/:uid', async (req, res) => {
     } catch (e) {
         console.error(e)
         if (e.response) {
-            res.status(e.response.status)
+            res.sendStatus(e.response.status)
+        } else {
+            res.sendStatus(500)
         }
     }
 })
@@ -208,36 +220,42 @@ router.get('/parking_area_statistics/uid/:uid', async (req, res) => {
  *                     $ref: '#/components/definitions/MultiPolygon'
  *                   capacity_estimate:
  *                     type: integer
- *       304:
- *         description: The requested parking area statistics not modified
  *       400:
  *         description: Bad request
  *
  */
 router.get(
     '/parking_area_statistics/popular/:from/:to/:limit/:offset',
+    param('from').custom(value => {
+        const date = new Date(value)
+        return Boolean(+date)
+    }),
+    param('to').custom(value => {
+        const date = new Date(value)
+        return Boolean(+date)
+    }),
+    param('limit').toInt().isInt(),
+    param('offset').toInt().isInt(),
     async (req, res) => {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() })
+        }
         const { from, to, limit, offset } = req.params
-        if ((from, to, limit, offset)) {
-            const fromDate = new Date(decodeURIComponent(from))
-            const toDate = new Date(decodeURIComponent(to))
 
-            try {
-                const popularParkingAreas = await getPopularParkingAreas(
-                    fromDate,
-                    toDate,
-                    limit,
-                    offset,
-                )
-                res.send(popularParkingAreas)
-            } catch (e) {
-                console.error(e)
-                if (e.response) {
-                    res.status(e.response.status)
-                }
-            }
-        } else {
-            res.status(400)
+        const fromDate = new Date(from)
+        const toDate = new Date(to)
+        try {
+            const popularParkingAreas = await getPopularParkingAreas(
+                fromDate,
+                toDate,
+                limit,
+                offset,
+            )
+            res.send(popularParkingAreas)
+        } catch (e) {
+            console.error(e)
+            res.sendStatus(500)
         }
     },
 )
