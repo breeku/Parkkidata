@@ -4,12 +4,7 @@ require('dotenv').config()
 module.exports = {
     development: {
         client: 'pg',
-        connection: {
-            user: process.env.DB_USER,
-            host: process.env.DB_HOST,
-            database: process.env.DB_NAME,
-            password: process.env.DB_PASSWORD,
-        },
+        connection: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
         pool: {
             min: 2,
             max: 10,
