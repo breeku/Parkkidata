@@ -59,7 +59,8 @@ export default function Statistics() {
     }
 
     return (
-        <div style={{ width: 400 }}>
+        <div style={{ width: 400 }}
+            data-testid="statistics">
             <DatePicker
                 selected={fromDate}
                 onChange={date => (setOffset(0), setFromDate(date))}

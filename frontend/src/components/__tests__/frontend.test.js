@@ -1,8 +1,9 @@
-import { render, screen, } from '@testing-library/react'
+import { render, screen, fireEvent, } from '@testing-library/react'
 
 import '@testing-library/jest-dom'
 
 import App from '../../App'
+import Statistics from '../Window/Statistics'
 
 
 test('should render App component wihtout crash', () => {
@@ -12,4 +13,9 @@ test('should render App component wihtout crash', () => {
     expect(appElement).toBeInTheDocument();
     expect(appElementFilter).toBeInTheDocument();
     expect(appElement).toHaveTextContent('capacity estimate:');
+
+    fireEvent.click(screen.getByText('Statistics'))
+    const appElementStatistics = screen.getByTestId('statistics');
+    expect(appElementStatistics).toBeInTheDocument();
+
 })
