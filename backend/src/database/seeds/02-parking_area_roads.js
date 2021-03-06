@@ -4,10 +4,10 @@ const stringified = fs.readFileSync('./src/database/utils/roads.json')
 const data = JSON.parse(stringified)
 
 exports.seed = async function (knex) {
-    return await knex.transaction(trx => {
+    return knex.transaction(trx => {
         const queries = []
         for (const { uid, road, house_number } of data) {
-            if ((road, house_number)) {
+            if (road || house_number) {
                 const query = knex('parking_area')
                     .where({ uid })
                     .update({
