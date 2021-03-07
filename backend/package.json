@@ -14,7 +14,8 @@
         "migrate": "knex migrate:latest",
         "migrate:reset": "knex migrate:rollback --all && knex migrate:latest && knex seed:run && npm run update:db",
         "test": "cross-env NODE_ENV=test jest --testTimeout=10000",
-        "pretest": "cross-env NODE_ENV=test npm run migrate"
+        "pretest": "cross-env NODE_ENV=test npm run migrate",
+        "first:test": "cross-env NODE_ENV=test npm run migrate:reset"
     },
     "keywords": [],
     "author": "",
