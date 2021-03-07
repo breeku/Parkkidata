@@ -1,12 +1,12 @@
 # Web-sovelluskehitys-2-projekti
 
-## KUVAUS
+## Kuvaus
 
-Parkkidata on web-sovellus millä käyttäjät voivat nähdä Etelä_helsingin parkkipaikkoja ja niiden pysäköintistatistiikkaa. Sovelluksella voi myös suodattaa dataa ja katsoa parkkipaikat listana kiireisimmästä vähiten kiireisimpään.
+Parkkidata on web-sovellus millä käyttäjät voivat nähdä Etelä-Helsingin parkkipaikkoja ja niiden pysäköintistatistiikkaa. Sovelluksella voi myös suodattaa dataa ja katsoa parkkipaikat listana kiireisimmästä vähiten kiireisimpään.
 
 Linkki sovellukseen https://parkkidata.tk/
 
-## TOIMINNALLISUUS
+## Toiminnallisuus
 
 •Sovelluksen aukeutuessa näkee kartalla Etelä_helsingin parkkipaikkoja. Karttaa voi tarkentaa hiiren rullalla tai vasemmalla yläkulmassa olevilla painikkeilla sekä liikutella raahamalla hiirellä. Parkkipaikat näkyvät sinisenä ja valittu parkkipaikka näkyy punaisena.
 •Ikkuna, jolla sovellusta hallitaan kartan lisäksi on myös liikuteltavissa.
@@ -15,7 +15,7 @@ Linkki sovellukseen https://parkkidata.tk/
 •Sen lisäksi aukeaa kaavio, josta näkee historian, että kuinka monta autoa siellä on ollut parkissa. Tässä kaaviossa voi rajaa dataa 12h, 24h, tai 7 päivään.
 •Sovellus mahdollistaa katsoa parkkipaikkoja listana kiireisimmästä vähiten kiireisimpään yhteen laskettujen automäärien mukaan. Listassa näkyy parkkipaikan koordinaatti, katuosoite sekä yhteen lasketut autojen määrät.
 
-## SOVELLUKSEN ARKITEHTUURI JA KÄYTETYT TEKNOLOGIAT
+## Sovelluksen arkkitehtuuri ja käytety teknologiat
 
 •Frontend: React,
 •Backend: Node.js, Express, PostgreSQL, Knex,
@@ -44,7 +44,8 @@ Asennuksen mukana tulee pgAdmin jolla pystyt katselemaan tietokantaa.
 
 Backend kansioon luo ".env" jonka sisään tulee tietokantasi käyttäjä, salasana, host ja tietokannan nimi, malliin `DB_USER=käyttäjä`, `DB_PASSWORD=salasana`, `DB_HOST=host`, `DB_DATABASE=tietokanta`. Oletusarvoisesti käyttäjä on postgres, salasanan asetat postgressia asentaessa, host on 127.0.0.1, tietokannan nimen saat itse valita.
 
-Tämän jälkeen luot tietokannan pgAdmin-sovelluksessa, asennat backend kansiossa knex:in komennolla `npm install knex -g` jonka jälkeen migrate `knex migrate:latest`
+Tämän jälkeen luot tietokannan pgAdmin-sovelluksessa, asennat backend kansiossa knex:in komennolla
+`npm install knex -g` jonka jälkeen migrate `knex migrate:latest`
 
 #### Tietokannan sisältö:
 
