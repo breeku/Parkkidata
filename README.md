@@ -6,24 +6,30 @@ Parkkidata on web-sovellus millä käyttäjät voivat nähdä Etelä-Helsingin p
 
 Linkki sovellukseen https://parkkidata.tk/
 
+Linkki API dokumentaatioon https://docs.parkkidata.tk/
+
 ## Toiminnallisuus
 
-•Sovelluksen aukeutuessa näkee kartalla Etelä_helsingin parkkipaikkoja. Karttaa voi tarkentaa hiiren rullalla tai vasemmalla yläkulmassa olevilla painikkeilla sekä liikutella raahamalla hiirellä. Parkkipaikat näkyvät sinisenä ja valittu parkkipaikka näkyy punaisena.
-•Ikkuna, jolla sovellusta hallitaan kartan lisäksi on myös liikuteltavissa.
-•Sovelluksella voi suodattaa parkkipaikkoja sen parkkipaikkojen määrän mukaan vaihtoehdoilla enemmän kuin, vähemmän kuin tai tasan. Joissakin parkkipaikoissa parkkipaikkojen määrä ei ole ilmoitettu, nämä saadaan pois näkyvistä tai takaisin näkyviin yhdellä täpällä.
-•Kun painaa haluamastaan parkkipaikasta, näkee sen tunnuksen, kuinka monta autoa sinne mahtuu ja paljon on sillä hetkellä parkissa autoja.
-•Sen lisäksi aukeaa kaavio, josta näkee historian, että kuinka monta autoa siellä on ollut parkissa. Tässä kaaviossa voi rajaa dataa 12h, 24h, tai 7 päivään.
-•Sovellus mahdollistaa katsoa parkkipaikkoja listana kiireisimmästä vähiten kiireisimpään yhteen laskettujen automäärien mukaan. Listassa näkyy parkkipaikan koordinaatti, katuosoite sekä yhteen lasketut autojen määrät.
+- Sovelluksen aukeutuessa näkee kartalla Helsingin parkkipaikkoja. Karttaa voi tarkentaa hiiren rullalla tai vasemmalla yläkulmassa olevilla painikkeilla sekä liikutella raahamalla hiirellä. Parkkipaikat näkyvät sinisenä ja valittu parkkipaikka näkyy punaisena.
 
-## Sovelluksen arkkitehtuuri ja käytety teknologiat
+- Ikkuna, jolla sovellusta hallitaan kartan lisäksi on myös liikuteltavissa.
 
-•Frontend: React,
-•Backend: Node.js, Express, PostgreSQL, Knex,
-•Version hallinta: Git and GitHub
-•Testit: Jest,
-•Deployment:
-•Rajapinta-haku: https://pubapi.parkkiopas.fi/public/v1/
-•Dokumentaatio:
+- Sovelluksella voi suodattaa parkkipaikkoja sen parkkipaikkojen määrän mukaan vaihtoehdoilla enemmän kuin, vähemmän kuin tai tasan. Joissakin parkkipaikoissa parkkipaikkojen määrä ei ole ilmoitettu, nämä saadaan pois näkyvistä tai takaisin näkyviin yhdellä täpällä.
+
+- Kun painaa haluamastaan parkkipaikasta, näkee sen tunnuksen, kuinka monta autoa sinne mahtuu ja paljon on sillä hetkellä parkissa autoja.
+
+- Sen lisäksi aukeaa kaavio, josta näkee historian, että kuinka monta autoa siellä on ollut parkissa. Tässä kaaviossa voi rajaa dataa 12h, 24h, tai 7 päivään.
+
+- Sovellus mahdollistaa katsoa parkkipaikkoja listana kiireisimmästä vähiten kiireisimpään yhteen laskettujen automäärien mukaan. Listassa näkyy parkkipaikan koordinaatti, katuosoite sekä yhteen lasketut autojen määrät.
+
+## Sovelluksen arkkitehtuuri ja käytetyt teknologiat
+
+- Frontend: React,
+- Backend: Node.js, Express, PostgreSQL, Knex,
+- Version hallinta: Git 
+- Testit: Jest,
+- Deployment: Dokku & Netlify
+- Rajapinta-haku: https://pubapi.parkkiopas.fi/public/v1/
 
 ## Asennus ja Devaus
 
@@ -63,5 +69,4 @@ Reactin dev serverin saa käynnistettyä frontend kansiosta ajamalla `npm run st
 voit valita itse. Testit voidaan ajaa backend kansiosta komennolla `npm run test` (ensimmäistä testikertaa ajettaessa käytä ensin komentoa `npm run first:test`) 
 
 #### Dokumentaatio
-Dokumentaation projektissa käytettävälle Apille voi generoida ajamalla backend kansiossa `npm run swagger`. Dokumentaatio generoituu /backend/src/swagger kansioon
-Dokumentaatio löytyy osoitteesta https://docs.parkkidata.tk/
+Dokumentaation projektissa käytettävälle Apille voi generoida ajamalla backend kansiossa `npm run swagger`. Dokumentaatio generoituu /backend/src/swagger kansioon.
