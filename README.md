@@ -34,7 +34,7 @@ Linkki API dokumentaatioon https://docs.parkkidata.tk/
 ## Asennus ja Devaus
 
 Vs-code:ssa tai muussa kehitysympäristössä etsi "clone repository" -toiminto, ja kopioi alla oleva linkki sen URL-kenttään:
-`git clone: https://github.com/breeku/Web-sovelluskehitys-2-projekti`
+`git clone: https://github.com/breeku/Parkkidata`
 
 #### Riippuvuuksien asennus
 
